@@ -57,6 +57,15 @@ public final class Constants {
 
     public static final int xboxControllerPort = 0;
 
+    //Pneumatics
+    
+    public static final int climbLeftPnumaticDeploy = 10;
+    public static final int climbLeftPnumaticRetract = 15;
+    public static final int climbRightPnumaticDeploy = 0;
+    public static final int climbRightPnumaticRetract = 1;
+    public static final int shootPnumaticDeploy = 2;
+    public static final int shootPnumaticRetract = 3;
+
 
     //Instansiated in this order:
     //FrontLeft, FrontRight, RearLeft, RearRight

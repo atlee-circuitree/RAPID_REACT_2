@@ -4,11 +4,25 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Pneumatics extends SubsystemBase {
-  /** Creates a new Pneumatics. */
-  public Pneumatics() {}
+  
+  DoubleSolenoid climbLeft;
+  DoubleSolenoid climbRight;
+  DoubleSolenoid shooterPiston; 
+  
+  public Pneumatics() {
+
+    climbLeft = new DoubleSolenoid(15, PneumaticsModuleType.REVPH, Constants.climbLeftPnumaticDeploy, Constants.climbLeftPnumaticRetract);
+    climbRight = new DoubleSolenoid(15, PneumaticsModuleType.REVPH, Constants.climbRightPnumaticDeploy, Constants.climbRightPnumaticRetract);
+    shooterPiston = new DoubleSolenoid(15 , PneumaticsModuleType.REVPH, Constants.shootPnumaticDeploy, Constants.shootPnumaticRetract);
+
+
+  }
 
   @Override
   public void periodic() {
