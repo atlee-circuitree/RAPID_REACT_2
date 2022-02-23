@@ -42,6 +42,11 @@ public final class Constants {
     public static final double rearRightEncoderOffset = 164.09;
 
     public static final int feederMotorPort = 17;
+    
+    public static final int topShooterMotorPort = 13;
+    public static final int bottomShooterMotorPort = 14;
+
+    public static final int turretMotorPort = 19;
 
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
@@ -65,5 +70,6 @@ public final class Constants {
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints thetaControllerConstraints =
         new TrapezoidProfile.Constraints(Math.PI, Math.PI);
+    
 
 }

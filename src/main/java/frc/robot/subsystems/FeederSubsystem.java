@@ -5,13 +5,24 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class FeederSubsystem extends SubsystemBase {
 
   CANSparkMax feederMotor = null;
+
+  public final ColorSensorV3 colorSensor = new ColorSensorV3(Constants.i2cPort);
+
+  public final static ColorMatch m_colorMatcher = new ColorMatch();
+
+  public static Color Red = new Color(0.561, 0.232, 0.114);
    
   public FeederSubsystem() {
 
@@ -24,6 +35,22 @@ public class FeederSubsystem extends SubsystemBase {
 
     feederMotor.set(speed);
 
+  }
+
+  public static double isRed() {
+    
+    m_colorMatcher.addColorMatch(Red);
+
+    if (m_colorMatcher.matchColor(Red) != null) {
+    return 1;
+    } else {
+    return 0;
+    }
+
+  }
+ 
+  public void startUSBCamera(){
+    CameraServer.startAutomaticCapture();
   }
 
 }
