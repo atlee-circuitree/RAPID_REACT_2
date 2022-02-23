@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.I2C;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -39,6 +40,10 @@ public final class Constants {
     public static final double frontRightEncoderOffset = 359.12;
     public static final double rearLeftEncoderOffset = 16.08;
     public static final double rearRightEncoderOffset = 164.09;
+
+    public static final int feederMotorPort = 17;
+
+    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
     public static final double trackwidth = 14.5;
     public static final double wheelbase = 25.5;
