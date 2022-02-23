@@ -61,8 +61,8 @@ public class SmartDashboardCommand extends CommandBase {
     //VARS FROM ROBOTCONTAINER AND DRIVETRAIN
 
     //Robotcontainer vars
-    SmartDashboard.putNumber("Xbox left X value", RobotContainer.xbox.getX(Hand.kLeft));
-    SmartDashboard.putNumber("Xbox left Y value", RobotContainer.xbox.getY(Hand.kLeft));
+    SmartDashboard.putNumber("Xbox left X value", RobotContainer.xbox.getLeftX());
+    SmartDashboard.putNumber("Xbox left Y value", RobotContainer.xbox.getLeftY());
     
     //Drivetrain display local vars
     String[] splitStringArrayDVT = Drivetrain.drivetrainDashboard.split(";");

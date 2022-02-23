@@ -53,9 +53,9 @@ public class DriveWithXbox extends CommandBase {
     */
 
     //Define robot target vector variables (X,Y,Z respectively)  
-    double forward = -RobotContainer.xbox.getY(Hand.kLeft);
-    double strafe = -RobotContainer.xbox.getX(Hand.kLeft);
-    double rotation = -RobotContainer.xbox.getX(Hand.kRight);
+    double forward = -RobotContainer.xbox.getLeftY();
+    double strafe = -RobotContainer.xbox.getLeftX();
+    double rotation = -RobotContainer.xbox.getRightX();
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
@@ -94,7 +94,7 @@ public class DriveWithXbox extends CommandBase {
     }
 
     //Make SURE the robot stops when the joysticks are 0
-    if((RobotContainer.xbox.getX(Hand.kLeft) == 0 && RobotContainer.xbox.getY(Hand.kLeft) == 0 && RobotContainer.xbox.getX(Hand.kRight) == 0)){
+    if((RobotContainer.xbox.getLeftX() == 0 && RobotContainer.xbox.getLeftY() == 0 && RobotContainer.xbox.getRightX() == 0)){
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);
@@ -128,7 +128,7 @@ public class DriveWithXbox extends CommandBase {
 
 
     //DEBUG
-    if(RobotContainer.xbox.getStickButton(Hand.kRight)){
+    if(RobotContainer.xbox.getRightStickButton()){
       drivetrain.zeroNavXYaw();
     }
   }  

@@ -30,8 +30,8 @@ public class TestDriveCommand extends CommandBase {
   @Override
   public void execute() {
 
-    speed = RobotContainer.xbox.getY(Hand.kLeft);
-    rotspeed = RobotContainer.xbox.getX(Hand.kRight);
+    speed = RobotContainer.xbox.getLeftY();
+    rotspeed = RobotContainer.xbox.getRightX();
 
     drivetrain.driveAllModulesNonLinear(speed);
     drivetrain.rotateAllModulesNonLinear(90, rotspeed);
