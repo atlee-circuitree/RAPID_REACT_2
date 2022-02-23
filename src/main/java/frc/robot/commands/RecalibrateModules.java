@@ -8,7 +8,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.Motors;
 import frc.robot.subsystems.Drivetrain.SwerveModule;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
