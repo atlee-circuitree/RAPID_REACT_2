@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -16,15 +17,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import frc.robot.commands.ClimbPistonsToggle;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TestDriveCommand;
 import frc.robot.commands.TestRotateModules;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,26 +43,47 @@ public class RobotContainer {
   
   //Controllers
   public static XboxController xbox;
+  public static Joystick fightstick;
+
+  //Buttons
+  public static JoystickButton fightstickB;
   
   //Subsystems
   private final Drivetrain drivetrain;
+  private final Pneumatics pneumatics;
+  private final FeederSubsystem feeder;
+  private final LimeLightSubsystem limelight;
+  private final TurretSubsystem turret;
   
-  //Commands
+  //Regular Commands
   private final DriveWithXbox driveWithXbox;
   private final TestRotateModules testRotateModules;
   private final TestDriveCommand testDriveCommand;
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWXwithSDC;
   private final RecalibrateModules recalibrateModules;
-  
+  private final ClimbPistonsToggle climbPistonsToggle;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    
-    drivetrain = new Drivetrain();
 
+    //Controller Setup
+    xbox = new XboxController(0);
+    fightstick = new Joystick(1);
+
+    //Button Setup
+    fightstickB = new JoystickButton(fightstick, 2);
+    
+    //subsystems
+    drivetrain = new Drivetrain();
+    pneumatics = new Pneumatics();
+    feeder = new FeederSubsystem();
+    limelight = new LimeLightSubsystem();
+    turret = new TurretSubsystem();
+
+    //Teleop commands
     driveWithXbox = new DriveWithXbox(drivetrain);
     driveWithXbox.addRequirements(drivetrain);
 
@@ -67,11 +95,13 @@ public class RobotContainer {
     //testDriveCommand.addRequirements(drivetrain);
     //drivetrain.setDefaultCommand(testDriveCommand);
 
+
+    //Other commands
+    climbPistonsToggle = new ClimbPistonsToggle(pneumatics, fightstick);
+
     //Auto Setup
     testRotateModules = new TestRotateModules(drivetrain);
 
-    //Controller Setup
-    xbox = new XboxController(0);
 
     configureButtonBindings();
 
@@ -88,7 +118,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

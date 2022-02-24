@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -27,5 +28,14 @@ public class Pneumatics extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void climbPistonsUp(){
+    climbLeft.set(Value.kForward);
+    climbRight.set(Value.kForward);
+  }
+  public void climbPistonsDown(){
+    climbLeft.set(Value.kReverse);
+    climbRight.set(Value.kReverse);
   }
 }
