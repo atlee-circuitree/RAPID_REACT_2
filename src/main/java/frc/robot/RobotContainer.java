@@ -20,6 +20,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.commands.ClimbPistonsToggle;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
+import frc.robot.commands.RunFeeder;
+import frc.robot.commands.ShooterPistonToggle;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TestDriveCommand;
 import frc.robot.commands.TestRotateModules;
@@ -63,6 +65,8 @@ public class RobotContainer {
   private final PerpetualCommand DWXwithSDC;
   private final RecalibrateModules recalibrateModules;
   private final ClimbPistonsToggle climbPistonsToggle;
+  private final ShooterPistonToggle shooterPistonToggle;
+  private final RunFeeder runFeeder;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -98,6 +102,8 @@ public class RobotContainer {
 
     //Other commands
     climbPistonsToggle = new ClimbPistonsToggle(pneumatics, fightstick);
+    shooterPistonToggle = new ShooterPistonToggle(pneumatics);
+    runFeeder = new RunFeeder(feeder);
 
     //Auto Setup
     testRotateModules = new TestRotateModules(drivetrain);
@@ -109,7 +115,7 @@ public class RobotContainer {
 
     recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
-    drivetrain.setDefaultCommand(DWXwithSDC);
+    //drivetrain.setDefaultCommand(DWXwithSDC);
   }
 
   /**
@@ -119,6 +125,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    JoystickButton DriverA = new JoystickButton(xbox, XboxController.Button.kA.value);
+    JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
+
+    DriverA.whileHeld(shooterPistonToggle);
+    DriverB.whileHeld(runFeeder);
     
   }
 

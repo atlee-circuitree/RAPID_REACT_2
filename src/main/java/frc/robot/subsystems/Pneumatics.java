@@ -14,7 +14,7 @@ public class Pneumatics extends SubsystemBase {
   
   DoubleSolenoid climbLeft;
   DoubleSolenoid climbRight;
-  DoubleSolenoid shooterPiston; 
+  DoubleSolenoid shooterPiston;
   
   public Pneumatics() {
 
@@ -37,5 +37,11 @@ public class Pneumatics extends SubsystemBase {
   public void climbPistonsDown(){
     climbLeft.set(Value.kReverse);
     climbRight.set(Value.kReverse);
+  }
+  public void shooterUp(){
+    shooterPiston.set(Value.kForward);
+  }
+  public void shooterDown(){
+    shooterPiston.set(Value.kReverse);
   }
 }
