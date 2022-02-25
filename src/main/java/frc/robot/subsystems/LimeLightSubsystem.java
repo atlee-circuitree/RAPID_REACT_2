@@ -187,13 +187,13 @@ public class LimeLightSubsystem extends SubsystemBase {
   
     double targetOffsetAngle_Vertical = ty;
 
-    // how many degrees back is your limelight rotated from perfectly vertical?
+    //how many degrees back is your limelight rotated from perfectly vertical?
     double limelightMountAngleDegrees = 45.0;
 
-    // distance from the center of the Limelight lens to the floor
+    //distance from the center of the Limelight lens to the floor
     double limelightHeightInches = 26.0;
 
-    // distance from the target to the floor
+    //distance from the target to the floor
     double goalHeightInches = 100.0;
 
     double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;

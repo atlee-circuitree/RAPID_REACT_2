@@ -65,7 +65,7 @@ public class RobotContainer {
   private final TestDriveCommand testDriveCommand;
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
-  private final RecalibrateModules recalibrateModules;
+  //private final RecalibrateModules recalibrateModules;
   private final ClimbPistonsToggle climbPistonsToggle;
   private final ShooterPistonToggle shooterPistonToggle;
   private final RunFeeder runFeeder;
@@ -118,7 +118,7 @@ public class RobotContainer {
 
     //Other Setup
 
-    recalibrateModules = new RecalibrateModules(drivetrain, xbox);
+    //recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
     DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand.alongWith(turretRotate)));
     
