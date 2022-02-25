@@ -52,9 +52,9 @@ public class DriveWithXbox extends CommandBase {
     */
 
     //Define robot target vector variables (X,Y,Z respectively)  
-    double forward = -RobotContainer.xbox.getLeftY() * 0;
-    double strafe = -RobotContainer.xbox.getLeftX() * 0;
-    double rotation = -RobotContainer.xbox.getRightX() * 0;
+    double forward = -RobotContainer.xbox.getLeftY();
+    double strafe = -RobotContainer.xbox.getLeftX();
+    double rotation = -RobotContainer.xbox.getRightX();
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
@@ -106,16 +106,16 @@ public class DriveWithXbox extends CommandBase {
     }
     else{
       //Set angles for modules (change speed mod later if needed)
-      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 1);
-      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 1);
-      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 1);
-      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 1);
+      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 0);
+      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 0);
+      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 0);
+      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 0);
 
       //Set speeds for modules
-      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed);
-      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, frontRightSpeed);
-      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, rearLeftSpeed);
-      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, rearRightSpeed);
+      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed * 0);
+      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, frontRightSpeed * 0);
+      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, rearLeftSpeed * 0);
+      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, rearRightSpeed * 0);
     }
 
     //Show important values on dashboard

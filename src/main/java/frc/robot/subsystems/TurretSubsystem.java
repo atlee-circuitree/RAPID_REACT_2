@@ -56,8 +56,7 @@ public class TurretSubsystem extends SubsystemBase {
   Encoder turretEncoder = null;
   PWM pwmEncoder;
   AnalogEncoder turretCoder;
-  
-  
+
   public static String turretDashboard;
 
   public TurretSubsystem() {
@@ -68,7 +67,8 @@ public class TurretSubsystem extends SubsystemBase {
     turretMotor = new CANSparkMax(Constants.turretMotorPort, MotorType.kBrushed);
     turretEncoder = new Encoder(0, 1);
     pwmEncoder = new PWM(0);
-    turretCoder = new AnalogEncoder(1);
+    turretCoder = new AnalogEncoder(0);
+    
     
 
   }
@@ -77,7 +77,6 @@ public class TurretSubsystem extends SubsystemBase {
   
     turretDashboard = "Encoder Position/" + turretEncoder.get() + ";";
     turretDashboard = "PWM Encoder Position/" + pwmEncoder.getRaw() + ";";
-    System.out.println("Analog Encoder" + turretCoder.get());
    
   }
 
