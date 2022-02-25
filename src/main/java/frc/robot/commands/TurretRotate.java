@@ -4,25 +4,58 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 public class TurretRotate extends CommandBase {
-  /** Creates a new TurretRotate. */
-  public TurretRotate() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+  
+  private final TurretSubsystem turret;
+  private final LimeLightSubsystem limelight;
+  private XboxController xbox;
 
-  // Called when the command is initially scheduled.
+  public TurretRotate(TurretSubsystem ts, LimeLightSubsystem lim, XboxController xboxController) {
+
+    turret = ts;
+    limelight = lim;
+    xbox = xboxController;
+
+    addRequirements(turret);
+
+  }
+ 
   @Override
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
 
-  // Called once the command ends or is interrupted.
+    if(xbox.getLeftX() != 0){
+      turret.turnTurret(xbox.getLeftX());
+    }
+    else if(limelight.HorizontalOffset() > 2){
+      turret.turnTurret(0.15);
+    }
+    else if(limelight.HorizontalOffset() < -2){
+      turret.turnTurret(-0.15);
+    }
+    else{
+      turret.turnTurret(0);
+    }
+    
+
+  }
+
+  
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    turret.turnTurret(0);
+
+  }
 
   // Returns true when the command should end.
   @Override

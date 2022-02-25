@@ -52,9 +52,9 @@ public class DriveWithXbox extends CommandBase {
     */
 
     //Define robot target vector variables (X,Y,Z respectively)  
-    double forward = -RobotContainer.xbox.getLeftY();
-    double strafe = -RobotContainer.xbox.getLeftX();
-    double rotation = -RobotContainer.xbox.getRightX();
+    double forward = -RobotContainer.xbox.getLeftY() * 0;
+    double strafe = -RobotContainer.xbox.getLeftX() * 0;
+    double rotation = -RobotContainer.xbox.getRightX() * 0;
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 

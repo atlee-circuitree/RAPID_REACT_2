@@ -25,6 +25,7 @@ import frc.robot.commands.ShooterPistonToggle;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TestDriveCommand;
 import frc.robot.commands.TestRotateModules;
+import frc.robot.commands.TurretRotate;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -45,6 +46,7 @@ public class RobotContainer {
   
   //Controllers
   public static XboxController xbox;
+  public static XboxController xbox2;
   public static Joystick fightstick;
 
   //Buttons
@@ -62,11 +64,12 @@ public class RobotContainer {
   private final TestRotateModules testRotateModules;
   private final TestDriveCommand testDriveCommand;
   private final SmartDashboardCommand smartDashboardCommand;
-  private final PerpetualCommand DWXwithSDC;
+  private final PerpetualCommand DWX_SDC_TUR;
   private final RecalibrateModules recalibrateModules;
   private final ClimbPistonsToggle climbPistonsToggle;
   private final ShooterPistonToggle shooterPistonToggle;
   private final RunFeeder runFeeder;
+  private final TurretRotate turretRotate;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -75,7 +78,8 @@ public class RobotContainer {
 
     //Controller Setup
     xbox = new XboxController(0);
-    fightstick = new Joystick(1);
+    xbox2 = new XboxController(1);
+    fightstick = new Joystick(2);
 
     //Button Setup
     fightstickB = new JoystickButton(fightstick, 2);
@@ -92,7 +96,7 @@ public class RobotContainer {
     driveWithXbox.addRequirements(drivetrain);
 
     smartDashboardCommand = new SmartDashboardCommand();
-    DWXwithSDC = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand));
+    
 
 
     testDriveCommand = new TestDriveCommand(drivetrain);
@@ -104,6 +108,7 @@ public class RobotContainer {
     climbPistonsToggle = new ClimbPistonsToggle(pneumatics, fightstick);
     shooterPistonToggle = new ShooterPistonToggle(pneumatics);
     runFeeder = new RunFeeder(feeder);
+    turretRotate = new TurretRotate(turret, limelight, xbox2);
 
     //Auto Setup
     testRotateModules = new TestRotateModules(drivetrain);
@@ -115,7 +120,9 @@ public class RobotContainer {
 
     recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
-    //drivetrain.setDefaultCommand(DWXwithSDC);
+    DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand.alongWith(turretRotate)));
+    
+    drivetrain.setDefaultCommand(DWX_SDC_TUR);
   }
 
   /**

@@ -5,17 +5,19 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PWM;
 import frc.robot.Constants;
 
-public class TurretSubsystem extends PIDSubsystem {
+public class TurretSubsystem extends SubsystemBase {
 
   // Giant Chunk of Copy-Paste Code
   // https://cdn.shopify.com/s/files/1/1518/8108/files/Armabot_A0085_Turret240_Encoder_Board_RevB.PDF
@@ -45,34 +47,38 @@ public class TurretSubsystem extends PIDSubsystem {
   //private final WPI_TalonSRX yourTalon = new WPI_TalonSRX(1);
   //private final AS5600EncoderPwm encoder = new
   //AS5600EncoderPwm(yourTalon.getSensorCollection());
+
    
   TalonSRX topShootMotor = null;
   TalonSRX bottomShootMotor = null;
   
   CANSparkMax turretMotor = null;
   Encoder turretEncoder = null;
+  PWM pwmEncoder;
+  AnalogEncoder turretCoder;
   
   
   public static String turretDashboard;
 
   public TurretSubsystem() {
  
-    super(new PIDController(0, 0, 0));
     topShootMotor = new TalonSRX(Constants.topShooterMotorPort);
     bottomShootMotor = new TalonSRX(Constants.bottomShooterMotorPort);
     
     turretMotor = new CANSparkMax(Constants.turretMotorPort, MotorType.kBrushed);
     turretEncoder = new Encoder(0, 1);
-
+    pwmEncoder = new PWM(0);
+    turretCoder = new AnalogEncoder(1);
     
 
   }
   @Override
   public void periodic() {
   
-    turretDashboard = "Encoder PWM Position/" + turretEncoder.get() + ";";
-  
-  
+    turretDashboard = "Encoder Position/" + turretEncoder.get() + ";";
+    turretDashboard = "PWM Encoder Position/" + pwmEncoder.getRaw() + ";";
+    System.out.println("Analog Encoder" + turretCoder.get());
+   
   }
 
   protected void useOutput(double output, double setpoint) {
@@ -99,8 +105,8 @@ public class TurretSubsystem extends PIDSubsystem {
 
     turretMotor.set(speed);
 
-    System.out.print("Encoder Pos");
-    System.out.println(turretEncoder.get());
+    //System.out.print("Encoder Pos");
+    //System.out.println(turretEncoder.get());
 
   }
  

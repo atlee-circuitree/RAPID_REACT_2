@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 
 public class SmartDashboardCommand extends CommandBase {
@@ -45,17 +47,22 @@ public class SmartDashboardCommand extends CommandBase {
 
     //LOCAL VARS FROM COMMANDS
 
+    //DriveWithXbox display local vars
 
-    //DriveWithXbox display local vars  
-    
-    String[] splitStringArrayDWX = DriveWithXbox.driveWithXboxDashboard.split(";");
+    try{
+      String[] splitStringArrayDWX = DriveWithXbox.driveWithXboxDashboard.split(";");
 
-    for(int i = 0; i <= splitStringArrayDWX.length-1; i++){
+      for(int i = 0; i <= splitStringArrayDWX.length-1; i++){
 
-      String[] splitSplitStringArrayDWX = splitStringArrayDWX[i].split("/");
-      SmartDashboard.putString(splitSplitStringArrayDWX[0], splitSplitStringArrayDWX[1]);
+        String[] splitSplitStringArrayDWX = splitStringArrayDWX[i].split("/");
+        SmartDashboard.putString(splitSplitStringArrayDWX[0], splitSplitStringArrayDWX[1]);
 
+      }
     }
+    catch(NullPointerException excpetion){
+      //Do nothing
+    }
+    
 
     //VARS FROM ROBOTCONTAINER AND DRIVETRAIN
 
@@ -73,6 +80,33 @@ public class SmartDashboardCommand extends CommandBase {
       SmartDashboard.putString(splitSplitStringArrayDVT[0], splitSplitStringArrayDVT[1]);
 
     }
+
+    //LIMELIGHT VARS
+
+    LimeLightSubsystem limelight = new LimeLightSubsystem();
+
+    limelight.EnableLED();
+
+    String[] splitStringArrayLIM = LimeLightSubsystem.limelightDashboard.split(";");
+        
+    for(int i = 0; i <= splitStringArrayLIM.length-1; i++){
+
+      String[] splitSplitStringArrayLIM = splitStringArrayLIM[i].split("/");
+      SmartDashboard.putString(splitSplitStringArrayLIM[0], splitSplitStringArrayLIM[1]);
+
+    }
+
+    //TURRET VARS
+
+    String[] splitStringArrayTUR = TurretSubsystem.turretDashboard.split(";");
+        
+    for(int i = 0; i <= splitStringArrayTUR.length-1; i++){
+
+      String[] splitSplitStringArrayTUR = splitStringArrayTUR[i].split("/");
+      SmartDashboard.putString(splitSplitStringArrayTUR[0], splitSplitStringArrayTUR[1]);
+
+    }
+
 
   }  
 

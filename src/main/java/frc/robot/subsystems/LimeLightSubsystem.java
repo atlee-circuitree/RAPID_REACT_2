@@ -35,11 +35,11 @@ public class LimeLightSubsystem extends SubsystemBase {
   }
 
   public double VerticalOffset() {
-    return dbl_tx;
+    return dbl_ty;
   }
 
   public double HorizontalOffset() {
-    return dbl_ty;
+    return dbl_tx;
   }
 
   public double TargetArea() {
@@ -175,14 +175,13 @@ public class LimeLightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     ReadNetworkTables();
-    //SmartDashboard.putNumber("Limelight Horizontal", dbl_thor);
-    //SmartDashboard.putNumber("Limelight Vertical", dbl_tvert);
     limelightDashboard = "Limelight Horizontal/" + dbl_thor + ";";
     limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_tvert + ";";
+    limelightDashboard = limelightDashboard + "Theoretical Distance To Target/" + getDistanceToTarget() + ";";
   }
 
 
-  public double getDistanceToTarget(double speed){
+  public double getDistanceToTarget(){
 
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
   
