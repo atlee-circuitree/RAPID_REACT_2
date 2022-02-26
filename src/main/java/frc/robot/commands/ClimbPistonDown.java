@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Pneumatics;
 
-public class ClimbPistonsToggle extends CommandBase {
+public class ClimbPistonDown extends CommandBase {
   
   private final Pneumatics pneumatics;
   private final Joystick fightstick;
 
-  public ClimbPistonsToggle(Pneumatics ps, Joystick joystick){
+  public ClimbPistonDown(Pneumatics ps, Joystick joystick){
     
     pneumatics = ps;
     fightstick = joystick;

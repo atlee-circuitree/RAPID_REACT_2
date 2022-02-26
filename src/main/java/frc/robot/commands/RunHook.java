@@ -6,15 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.Pneumatics;
 
-public class RunFeeder extends CommandBase {
+public class RunHook extends CommandBase {
   
-  private final FeederSubsystem feeder;
+  private final Pneumatics pneumatic;
+  private final double targetSpeed;
 
-  public RunFeeder(FeederSubsystem fs) {
+  public RunHook(double speed, Pneumatics ps) {
 
-    feeder = fs;
-    addRequirements(feeder);
+    targetSpeed = speed;
+    pneumatic = ps;
+    addRequirements(pneumatic);
 
   }
  
@@ -25,14 +28,15 @@ public class RunFeeder extends CommandBase {
   @Override
   public void execute() {
 
-    feeder.runFeeder(.7);
+    pneumatic.runHookMotor(targetSpeed); 
 
   }
 
   
   @Override
   public void end(boolean interrupted) {
- 
+
+    pneumatic.runHookMotor(targetSpeed); 
 
   }
 

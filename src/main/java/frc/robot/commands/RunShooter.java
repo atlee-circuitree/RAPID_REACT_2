@@ -4,53 +4,50 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Pneumatics;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.TurretSubsystem;
 
-public class ShooterPistonToggle extends CommandBase {
+public class RunShooter extends CommandBase {
   
   private Timer timer = new Timer();
-  private double timeout = 0.5;
-  private final Pneumatics pneumatics;
+  private double timeout;
+  private final TurretSubsystem turret;
+  private double velocity;
 
-  public ShooterPistonToggle(Pneumatics ps){
-    
-    pneumatics = ps;
-    
-    addRequirements(pneumatics);  
+  public RunShooter(double targetVelocity, double timeoutSeconds, TurretSubsystem ts) {
+
+    timeout = timeoutSeconds;
+    turret = ts;
+    velocity = targetVelocity;
+    addRequirements(turret);
+
   }
-
-  // Called when the command is initially scheduled.
+ 
   @Override
   public void initialize() {
-
     timer.reset();
     timer.start();
-    pneumatics.shooterUp();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
 
-  // Called once the command ends or is interrupted.
+    turret.runTurretWithVelocity(velocity);
+
+    
+  }
+
   @Override
   public void end(boolean interrupted) {
-
-    pneumatics.shooterDown();
     timer.stop();
-
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    return timer.hasElapsed(timeout);
-  
+    return timer.hasElapsed(timeout);    
   }
 }

@@ -17,11 +17,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import frc.robot.commands.ClimbPistonsToggle;
+import frc.robot.commands.ClimbPistonDown;
+import frc.robot.commands.ClimbPistonsUp;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.RunFeeder;
+import frc.robot.commands.RunHook;
+import frc.robot.commands.RunShooter;
 import frc.robot.commands.ShooterPistonToggle;
+import frc.robot.commands.ShooterWithPiston;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TestDriveCommand;
 import frc.robot.commands.TestRotateModules;
@@ -32,8 +36,11 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -45,12 +52,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   
   //Controllers
-  public static XboxController xbox;
-  public static XboxController xbox2;
-  public static Joystick fightstick;
-
-  //Buttons
-  public static JoystickButton fightstickB;
+  public static XboxController xbox = new XboxController(0);;
+  public static XboxController xbox2 = new XboxController(1);
+  public static Joystick fightstick = new Joystick(2);
   
   //Subsystems
   private final Drivetrain drivetrain;
@@ -66,24 +70,38 @@ public class RobotContainer {
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
   //private final RecalibrateModules recalibrateModules;
-  private final ClimbPistonsToggle climbPistonsToggle;
+  private final ClimbPistonsUp climbPistonsUp;
+  private final ClimbPistonDown climbPistonDown;
   private final ShooterPistonToggle shooterPistonToggle;
   private final RunFeeder runFeeder;
   private final TurretRotate turretRotate;
+  private final ShooterWithPiston shooterWithPiston;
+   
+  //Parallel Commands
+  private final SequentialCommandGroup ShootVelocitySCG;
+
+  
+  // Mult Commands
+  public Command ShooterCommand(double velocity, double timeoutSeconds) {
+    Command m_turretCommand = new RunShooter(velocity, timeoutSeconds, turret);
+    return m_turretCommand;
+  }
+
+  public Command HookCommand(double speed) {
+    Command m_climbCommand = new RunHook(speed, pneumatics);
+    return m_climbCommand;
+  }
+
+  public Command WaitCommand(double timeout) {
+    Command m_waitCommand = new WaitCommand(timeout);
+    return m_waitCommand;
+  }
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    //Controller Setup
-    xbox = new XboxController(0);
-    xbox2 = new XboxController(1);
-    fightstick = new Joystick(2);
-
-    //Button Setup
-    fightstickB = new JoystickButton(fightstick, 2);
-    
+ 
     //subsystems
     drivetrain = new Drivetrain();
     pneumatics = new Pneumatics();
@@ -96,19 +114,21 @@ public class RobotContainer {
     driveWithXbox.addRequirements(drivetrain);
 
     smartDashboardCommand = new SmartDashboardCommand();
-    
-
 
     testDriveCommand = new TestDriveCommand(drivetrain);
     //testDriveCommand.addRequirements(drivetrain);
     //drivetrain.setDefaultCommand(testDriveCommand);
 
-
     //Other commands
-    climbPistonsToggle = new ClimbPistonsToggle(pneumatics, fightstick);
+    climbPistonsUp = new ClimbPistonsUp(pneumatics, fightstick);
+    climbPistonDown = new ClimbPistonDown(pneumatics, fightstick);
     shooterPistonToggle = new ShooterPistonToggle(pneumatics);
     runFeeder = new RunFeeder(feeder);
     turretRotate = new TurretRotate(turret, limelight, xbox2);
+    ShootVelocitySCG = new SequentialCommandGroup(ShooterCommand(4000, 2), 
+    shooterPistonToggle, ShooterCommand(0, 0.5));
+    shooterWithPiston = new ShooterWithPiston(7800, turret, pneumatics);
+    
 
     //Auto Setup
     testRotateModules = new TestRotateModules(drivetrain);
@@ -133,11 +153,25 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    //P1 BUTTONS
     JoystickButton DriverA = new JoystickButton(xbox, XboxController.Button.kA.value);
     JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
 
-    DriverA.whileHeld(shooterPistonToggle);
-    DriverB.whileHeld(runFeeder);
+    DriverA.whenPressed(shooterWithPiston);
+    DriverB.whenPressed(runFeeder);
+    
+    //P2 BUTTONS
+
+    //FIGHTSTICK BUTTONS
+    JoystickButton FightstickB = new JoystickButton(fightstick, 2);
+    JoystickButton FightstickY = new JoystickButton(fightstick, 4);
+    JoystickButton FightstickL3 = new JoystickButton(fightstick, 11);
+    JoystickButton FightstickR3 = new JoystickButton(fightstick, 12);
+
+    FightstickB.whenPressed(climbPistonsUp);
+    FightstickY.whenPressed(climbPistonsUp);
+    FightstickL3.whileHeld(HookCommand(.4));
+    FightstickR3.whileHeld(HookCommand(.4));
     
   }
 

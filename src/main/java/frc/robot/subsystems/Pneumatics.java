@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -15,19 +18,26 @@ public class Pneumatics extends SubsystemBase {
   DoubleSolenoid climbLeft;
   DoubleSolenoid climbRight;
   DoubleSolenoid shooterPiston;
+  CANSparkMax hookMotor;
   
   public Pneumatics() {
 
     climbLeft = new DoubleSolenoid(15, PneumaticsModuleType.REVPH, Constants.climbLeftPnumaticDeploy, Constants.climbLeftPnumaticRetract);
     climbRight = new DoubleSolenoid(15, PneumaticsModuleType.REVPH, Constants.climbRightPnumaticDeploy, Constants.climbRightPnumaticRetract);
     shooterPiston = new DoubleSolenoid(15 , PneumaticsModuleType.REVPH, Constants.shootPnumaticDeploy, Constants.shootPnumaticRetract);
-
+    hookMotor = new CANSparkMax(Constants.hookMotorPort, MotorType.kBrushless);
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void runHookMotor(double speed) {
+
+    hookMotor.set(speed);
+
   }
 
   public void climbPistonsUp(){
@@ -37,6 +47,10 @@ public class Pneumatics extends SubsystemBase {
   public void climbPistonsDown(){
     climbLeft.set(Value.kReverse);
     climbRight.set(Value.kReverse);
+  }
+  public void climbPistonsToggle(){
+    climbLeft.toggle();
+    climbRight.toggle();
   }
   public void shooterUp(){
     shooterPiston.set(Value.kForward);

@@ -5,20 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Pneumatics;
 
-public class ShooterPistonToggle extends CommandBase {
+public class ClimbPistonsUp extends CommandBase {
   
-  private Timer timer = new Timer();
-  private double timeout = 0.5;
   private final Pneumatics pneumatics;
+  private final Joystick fightstick;
 
-  public ShooterPistonToggle(Pneumatics ps){
+  public ClimbPistonsUp(Pneumatics ps, Joystick joystick){
     
     pneumatics = ps;
+    fightstick = joystick;
     
     addRequirements(pneumatics);  
   }
@@ -27,9 +26,7 @@ public class ShooterPistonToggle extends CommandBase {
   @Override
   public void initialize() {
 
-    timer.reset();
-    timer.start();
-    pneumatics.shooterUp();
+    pneumatics.climbPistonsUp();
 
   }
 
@@ -39,18 +36,11 @@ public class ShooterPistonToggle extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    pneumatics.shooterDown();
-    timer.stop();
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    return timer.hasElapsed(timeout);
-  
+    return false;
   }
 }
