@@ -36,12 +36,14 @@ public final class Constants {
     public static final int rearLeftRotEncoderPort = 10;
     public static final int rearRightRotEncoderPort = 12;
 
-    //Increasing
-    public static final double frontLeftEncoderOffset = 203.71;
-    public static final double frontRightEncoderOffset = -161.54;
-    //Decreasing
-    public static final double rearLeftEncoderOffset = 53.7;
-    public static final double rearRightEncoderOffset = 8.17;
+    //Add 20.0
+    public static final double frontLeftEncoderOffset = 183.71;
+    //Subtract 27.0
+    public static final double frontRightEncoderOffset = -134.54;
+    //Add 27.0
+    public static final double rearLeftEncoderOffset = 206.7;
+    //Add 28.2
+    public static final double rearRightEncoderOffset = -20.0;
 
     public static final int feederMotorPort = 17;
     
@@ -54,8 +56,8 @@ public final class Constants {
 
     public static final I2C.Port i2cPort = I2C.Port.kOnboard;
 
-    public static final double trackwidth = 14.5;
-    public static final double wheelbase = 25.5;
+    public static final double trackwidth = 22.5;
+    public static final double wheelbase = 22.5;
     //Distance from center of robot to any module
     public static final double drivetrainRadius = Math.sqrt(Math.pow(trackwidth, 2) + Math.pow(wheelbase, 2)); 
 

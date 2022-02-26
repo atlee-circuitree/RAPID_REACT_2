@@ -25,7 +25,7 @@ public class RunFeeder extends CommandBase {
   @Override
   public void execute() {
 
-    feeder.runFeeder(.7);
+    feeder.runFeeder(.5);
 
   }
 
@@ -33,6 +33,7 @@ public class RunFeeder extends CommandBase {
   @Override
   public void end(boolean interrupted) {
  
+    feeder.runFeeder(0);
 
   }
 

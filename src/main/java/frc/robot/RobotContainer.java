@@ -71,14 +71,13 @@ public class RobotContainer {
   private final PerpetualCommand DWX_SDC_TUR;
   //private final RecalibrateModules recalibrateModules;
   private final ClimbPistonsUp climbPistonsUp;
-  private final ClimbPistonDown climbPistonDown;
+  private final ClimbPistonDown climbPistonsDown;
   private final ShooterPistonToggle shooterPistonToggle;
   private final RunFeeder runFeeder;
   private final TurretRotate turretRotate;
   private final ShooterWithPiston shooterWithPiston;
    
-  //Parallel Commands
-  private final SequentialCommandGroup ShootVelocitySCG;
+  //Command Groups
 
   
   // Mult Commands
@@ -121,12 +120,10 @@ public class RobotContainer {
 
     //Other commands
     climbPistonsUp = new ClimbPistonsUp(pneumatics, fightstick);
-    climbPistonDown = new ClimbPistonDown(pneumatics, fightstick);
+    climbPistonsDown = new ClimbPistonDown(pneumatics, fightstick);
     shooterPistonToggle = new ShooterPistonToggle(pneumatics);
     runFeeder = new RunFeeder(feeder);
     turretRotate = new TurretRotate(turret, limelight, xbox2);
-    ShootVelocitySCG = new SequentialCommandGroup(ShooterCommand(4000, 2), 
-    shooterPistonToggle, ShooterCommand(0, 0.5));
     shooterWithPiston = new ShooterWithPiston(7800, turret, pneumatics);
     
 
@@ -158,20 +155,20 @@ public class RobotContainer {
     JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
 
     DriverA.whenPressed(shooterWithPiston);
-    DriverB.whenPressed(runFeeder);
+    DriverB.whileHeld(runFeeder);
     
     //P2 BUTTONS
 
     //FIGHTSTICK BUTTONS
     JoystickButton FightstickB = new JoystickButton(fightstick, 2);
     JoystickButton FightstickY = new JoystickButton(fightstick, 4);
-    JoystickButton FightstickL3 = new JoystickButton(fightstick, 11);
-    JoystickButton FightstickR3 = new JoystickButton(fightstick, 12);
+    JoystickButton FightstickL3 = new JoystickButton(fightstick, 9);
+    JoystickButton FightstickR3 = new JoystickButton(fightstick, 10);
 
     FightstickB.whenPressed(climbPistonsUp);
-    FightstickY.whenPressed(climbPistonsUp);
-    FightstickL3.whileHeld(HookCommand(.4));
-    FightstickR3.whileHeld(HookCommand(.4));
+    FightstickY.whenPressed(climbPistonsDown);
+    FightstickL3.whileHeld(HookCommand(.5));
+    FightstickR3.whileHeld(HookCommand(-.5));
     
   }
 

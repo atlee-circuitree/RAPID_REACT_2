@@ -36,7 +36,7 @@ public class RunHook extends CommandBase {
   @Override
   public void end(boolean interrupted) {
 
-    pneumatic.runHookMotor(targetSpeed); 
+    pneumatic.runHookMotor(0); 
 
   }
 

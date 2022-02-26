@@ -39,7 +39,7 @@ public class RecalibrateModules extends CommandBase {
 
     speed = 0.06 * (xbox.getLeftTriggerAxis() - xbox.getRightTriggerAxis());
      
-    if(xbox.getAButtonPressed()){
+    if(xbox.getLeftStickButtonPressed()){
       moduleSelected++;
     }
 

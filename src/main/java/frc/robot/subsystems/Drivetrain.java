@@ -97,10 +97,10 @@ public class Drivetrain extends SubsystemBase {
     rearRightRotEncoder.setPosition(0);
 
     //not sure if these are the perfect values, but they work good enough, so.....
-    frontLeftPID = new PIDController(0.003, 0.00, 0.00);
-    frontRightPID = new PIDController(0.003, 0.00, 0.00);
-    rearLeftPID = new PIDController(0.003, 0.00, 0.00);
-    rearRightPID = new PIDController(0.003, 0.00, 0.00);
+    frontLeftPID = new PIDController(0.003, 0.00002, 0.00001);
+    frontRightPID = new PIDController(0.003, 0.00002, 0.00001);
+    rearLeftPID = new PIDController(0.003, 0.00002, 0.00001);
+    rearRightPID = new PIDController(0.003, 0.00002, 0.00001);
 
     frontLeftPID.enableContinuousInput(-180, 180);
     frontRightPID.enableContinuousInput(-180, 180);
