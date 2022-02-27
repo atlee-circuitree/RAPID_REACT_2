@@ -7,17 +7,18 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class ShooterWithPiston extends CommandBase {
+public class SimpleShooter extends CommandBase {
    
   private final TurretSubsystem turret;
   private final Pneumatics pneumatic;
   private double velocity;
   private long timeout = 1000;
 
-  public ShooterWithPiston(double targetVelocity ,TurretSubsystem ts, Pneumatics ps) {
+  public SimpleShooter(double targetVelocity, TurretSubsystem ts, Pneumatics ps) {
  
     turret = ts;
     pneumatic = ps;
@@ -37,9 +38,9 @@ public class ShooterWithPiston extends CommandBase {
   @Override
   public void execute() {
 
-    Timer.delay(2);
+    Timer.delay(1);
     pneumatic.shooterUp();
-    Timer.delay(2);
+    Timer.delay(1);
     turret.runTurretWithVelocity(0);
     pneumatic.shooterDown();
     end(true);

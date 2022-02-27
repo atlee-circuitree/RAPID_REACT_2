@@ -77,12 +77,12 @@ public class SmartDashboardCommand extends CommandBase {
     for(int i = 0; i <= splitStringArrayDVT.length-1; i++){
 
       String[] splitSplitStringArrayDVT = splitStringArrayDVT[i].split("/");
-      SmartDashboard.putString(splitSplitStringArrayDVT[0], splitSplitStringArrayDVT[1]);
+      SmartDashboard.putNumber(splitSplitStringArrayDVT[0], Double.valueOf(splitSplitStringArrayDVT[1]));
 
     }
 
     //LIMELIGHT VARS
-    /*
+
     LimeLightSubsystem limelight = new LimeLightSubsystem();
 
     limelight.EnableLED();
@@ -107,7 +107,7 @@ public class SmartDashboardCommand extends CommandBase {
 
     }
 
-    */
+    
 
   }  
 

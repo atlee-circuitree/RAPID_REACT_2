@@ -33,19 +33,19 @@ public class TurretRotate extends CommandBase {
   @Override
   public void execute() {
 
-    if(xbox.getLeftX() != 0){
-      turret.turnTurret(xbox.getLeftX() / 4);
+    //Check Red/Blue and Green/Blue SparkMax led code
+    if(xbox.getRightX() != 0){
+      turret.turnTurret(xbox.getRightX() / 4);
     }
-    /* else if(limelight.HorizontalOffset() > 2){
-      turret.turnTurret(0.15);
+    else if(limelight.HorizontalOffset() > 2){
+      turret.turnTurret(0.4);
     }
     else if(limelight.HorizontalOffset() < -2){
-      turret.turnTurret(-0.15);
+      turret.turnTurret(-0.4);
     }
     else{
       turret.turnTurret(0);
     }
-  */  
 
   }
 

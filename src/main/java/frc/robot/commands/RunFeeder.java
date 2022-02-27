@@ -25,7 +25,7 @@ public class RunFeeder extends CommandBase {
   @Override
   public void execute() {
 
-    feeder.runFeeder(.5);
+    feeder.runFeeder(.65);
 
   }
 

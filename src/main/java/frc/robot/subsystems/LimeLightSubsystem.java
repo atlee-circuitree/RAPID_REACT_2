@@ -175,8 +175,8 @@ public class LimeLightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     ReadNetworkTables();
-    limelightDashboard = "Limelight Horizontal/" + dbl_thor + ";";
-    limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_tvert + ";";
+    limelightDashboard = "Limelight Horizontal/" + dbl_tx + ";";
+    limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_ty + ";";
     limelightDashboard = limelightDashboard + "Theoretical Distance To Target/" + getDistanceToTarget() + ";";
   }
 

@@ -25,7 +25,8 @@ import frc.robot.commands.RunFeeder;
 import frc.robot.commands.RunHook;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.ShooterPistonToggle;
-import frc.robot.commands.ShooterWithPiston;
+import frc.robot.commands.ShooterWithLimelight;
+import frc.robot.commands.SimpleShooter;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TestDriveCommand;
 import frc.robot.commands.TestRotateModules;
@@ -75,7 +76,8 @@ public class RobotContainer {
   private final ShooterPistonToggle shooterPistonToggle;
   private final RunFeeder runFeeder;
   private final TurretRotate turretRotate;
-  private final ShooterWithPiston shooterWithPiston;
+  private final ShooterWithLimelight shooterWithPiston;
+
    
   //Command Groups
 
@@ -94,6 +96,10 @@ public class RobotContainer {
   public Command WaitCommand(double timeout) {
     Command m_waitCommand = new WaitCommand(timeout);
     return m_waitCommand;
+  }
+  public Command SimpleShootCommand(double velocity){
+    Command m_simpleShooter = new SimpleShooter(velocity, turret, pneumatics);
+    return m_simpleShooter;
   }
 
   /**
@@ -124,7 +130,7 @@ public class RobotContainer {
     shooterPistonToggle = new ShooterPistonToggle(pneumatics);
     runFeeder = new RunFeeder(feeder);
     turretRotate = new TurretRotate(turret, limelight, xbox2);
-    shooterWithPiston = new ShooterWithPiston(7800, turret, pneumatics);
+    shooterWithPiston = new ShooterWithLimelight(7800, turret, pneumatics, limelight);
     
 
     //Auto Setup
@@ -139,6 +145,7 @@ public class RobotContainer {
 
     DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand.alongWith(turretRotate)));
     
+    //drivetrain.setDefaultCommand(recalibrateModules);
     drivetrain.setDefaultCommand(DWX_SDC_TUR);
   }
 
@@ -158,6 +165,23 @@ public class RobotContainer {
     DriverB.whileHeld(runFeeder);
     
     //P2 BUTTONS
+    JoystickButton Driver2A = new JoystickButton(xbox2, XboxController.Button.kA.value);
+    JoystickButton Driver2B = new JoystickButton(xbox2, XboxController.Button.kB.value);
+    JoystickButton Driver2Y = new JoystickButton(xbox2, XboxController.Button.kY.value);
+    JoystickButton Driver2X = new JoystickButton(xbox2, XboxController.Button.kX.value);
+    JoystickButton Driver2LB = new JoystickButton(xbox2, 5);
+    JoystickButton Driver2RB = new JoystickButton(xbox2, 6);
+
+    //7600 works from close safe zone
+    Driver2A.whenPressed(SimpleShootCommand(7600));
+    Driver2B.whenPressed(SimpleShootCommand(8400));
+    //9200 works from far safe zone
+    Driver2Y.whenPressed(SimpleShootCommand(9200));
+    Driver2X.whenPressed(SimpleShootCommand(4000));
+
+    Driver2LB.whileHeld(HookCommand(.5));
+    Driver2RB.whileHeld(HookCommand(-.5));
+
 
     //FIGHTSTICK BUTTONS
     JoystickButton FightstickB = new JoystickButton(fightstick, 2);
@@ -165,10 +189,10 @@ public class RobotContainer {
     JoystickButton FightstickL3 = new JoystickButton(fightstick, 9);
     JoystickButton FightstickR3 = new JoystickButton(fightstick, 10);
 
-    FightstickB.whenPressed(climbPistonsUp);
-    FightstickY.whenPressed(climbPistonsDown);
-    FightstickL3.whileHeld(HookCommand(.5));
-    FightstickR3.whileHeld(HookCommand(-.5));
+    
+    FightstickL3.whenPressed(climbPistonsUp);
+    FightstickR3.whenPressed(climbPistonsDown);
+    
     
   }
 

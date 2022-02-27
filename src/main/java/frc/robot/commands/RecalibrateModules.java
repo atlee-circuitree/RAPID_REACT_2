@@ -37,7 +37,7 @@ public class RecalibrateModules extends CommandBase {
 
     double speed;
 
-    speed = 0.06 * (xbox.getLeftTriggerAxis() - xbox.getRightTriggerAxis());
+    speed = 0.08 * (xbox.getLeftTriggerAxis() - xbox.getRightTriggerAxis());
      
     if(xbox.getLeftStickButtonPressed()){
       moduleSelected++;
@@ -61,10 +61,10 @@ public class RecalibrateModules extends CommandBase {
 
     SmartDashboard.putNumber("testSpeed", speed);
     SmartDashboard.putNumber("Module selected", moduleSelected);
-    SmartDashboard.putNumber("FL Encoder", drivetrain.getRotEncoderValue(SwerveModule.FRONT_LEFT));
-    SmartDashboard.putNumber("FR Encoder", drivetrain.getRotEncoderValue(SwerveModule.FRONT_RIGHT));
-    SmartDashboard.putNumber("RL Encoder", drivetrain.getRotEncoderValue(SwerveModule.REAR_LEFT));
-    SmartDashboard.putNumber("RR Encoder", drivetrain.getRotEncoderValue(SwerveModule.REAR_RIGHT));
+    SmartDashboard.putNumber("FL Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.FRONT_LEFT));
+    SmartDashboard.putNumber("FR Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.FRONT_RIGHT));
+    SmartDashboard.putNumber("RL Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.REAR_LEFT));
+    SmartDashboard.putNumber("RR Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.REAR_RIGHT));
 
   }
 

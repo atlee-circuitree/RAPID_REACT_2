@@ -39,11 +39,11 @@ public final class Constants {
     //Add 20.0
     public static final double frontLeftEncoderOffset = 183.71;
     //Subtract 27.0
-    public static final double frontRightEncoderOffset = -134.54;
+    public static final double frontRightEncoderOffset = 231.0;
     //Add 27.0
     public static final double rearLeftEncoderOffset = 206.7;
     //Add 28.2
-    public static final double rearRightEncoderOffset = -20.0;
+    public static final double rearRightEncoderOffset = 171.0;
 
     public static final int feederMotorPort = 17;
     

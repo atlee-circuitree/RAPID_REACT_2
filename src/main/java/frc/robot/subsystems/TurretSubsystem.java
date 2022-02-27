@@ -94,9 +94,9 @@ public class TurretSubsystem extends SubsystemBase {
 
 
   public void runTurretWithVelocity(double velocity) {
-
-    topShootMotor.set(ControlMode.Velocity, -velocity * 1.15);
-    bottomShootMotor.set(ControlMode.Velocity, velocity);
+    //Close SZ shoot = Bottom * 1.3
+    topShootMotor.set(ControlMode.Velocity, -velocity);
+    bottomShootMotor.set(ControlMode.Velocity, velocity * 1.3);
 
   }
 
