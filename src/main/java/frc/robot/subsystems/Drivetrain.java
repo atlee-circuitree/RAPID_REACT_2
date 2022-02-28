@@ -97,16 +97,16 @@ public class Drivetrain extends SubsystemBase {
     rearRightRotEncoder.setPosition(0);
 
     //not sure if these are the perfect values, but they work good enough, so.....
-    frontLeftPID = new PIDController(0.0035, 0.00002, 0.00);
-    frontRightPID = new PIDController(0.0035, 0.00002, 0.00);
-    rearLeftPID = new PIDController(0.0035, 0.00002, 0.00);
-    rearRightPID = new PIDController(0.0035, 0.00002, 0.00);
+    //frontLeftPID = new PIDController(0.0035, 0.00002, 0.00);
+    //frontRightPID = new PIDController(0.0035, 0.00002, 0.00);
+    //rearLeftPID = new PIDController(0.0035, 0.00002, 0.00);
+    //rearRightPID = new PIDController(0.0035, 0.00002, 0.00);
 
     //Larson and Panten zeroed out Integral value. 2/27 5:01pm. not sure if these are the perfect values, but they work good enough, so.....
-    //frontLeftPID = new PIDController(0.0035, 0.00, 0.00);
-    //frontRightPID = new PIDController(0.0035, 0.00, 0.00);
-   // rearLeftPID = new PIDController(0.0035, 0.00, 0.00);
-   // rearRightPID = new PIDController(0.0035, 0.00, 0.00);
+    frontLeftPID = new PIDController(0.0025, 0.00, 0.0);
+    frontRightPID = new PIDController(0.0025, 0.00, 0.0);
+    rearLeftPID = new PIDController(0.0025, 0.00, 0.0);
+    rearRightPID = new PIDController(0.0025, 0.00, 0.0);
 
     frontLeftPID.enableContinuousInput(-180, 180);
     frontRightPID.enableContinuousInput(-180, 180);
@@ -443,56 +443,29 @@ public class Drivetrain extends SubsystemBase {
   public double getRotPIDOutput(SwerveModule module){
     if(module == SwerveModule.FRONT_LEFT){
       double measurement = frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT));
-      
-      if(measurement > 0.07 || measurement < -0.07){
+     
         return frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT));
-      }
-      else if(measurement < 0 && measurement > -0.07){
-        return -0.07;
-      }
-      else{
-        return 0.07;
-      } 
-      
+     
     }
     else if(module == SwerveModule.FRONT_RIGHT){
       double measurement = frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
       
-      if(measurement > 0.07 || measurement < -0.07){
-        return frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
-      }
-      else if(measurement < 0 && measurement > -0.07){
-        return -0.07;
-      }
-      else{
-        return 0.07;
-      }
+      
+      return frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
+      
     }
     else if(module == SwerveModule.REAR_LEFT){
       double measurement = rearLeftPID.calculate(getRotEncoderValue(SwerveModule.REAR_LEFT));
       
-      if(measurement > 0.07 || measurement < -0.07){
+      
         return rearLeftPID.calculate(getRotEncoderValue(SwerveModule.REAR_LEFT));
-      }
-      else if(measurement < 0 && measurement > -0.07){
-        return -0.07;
-      }
-      else{
-        return 0.07;
-      }
+    
     }
     else if(module == SwerveModule.REAR_RIGHT){
       double measurement = rearRightPID.calculate(getRotEncoderValue(SwerveModule.REAR_RIGHT));
       
-      if(measurement > 0.07 || measurement < -0.07){
         return rearRightPID.calculate(getRotEncoderValue(SwerveModule.REAR_RIGHT));
-      }
-      else if(measurement < 0 && measurement > -0.07){
-        return -0.07;
-      }
-      else{
-        return 0.07;
-      }
+    
     }
     else{
       return 0;
