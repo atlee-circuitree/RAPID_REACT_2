@@ -17,20 +17,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import frc.robot.commands.ClimbPistonDown;
-import frc.robot.commands.ClimbPistonsUp;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
-import frc.robot.commands.RunFeeder;
-import frc.robot.commands.RunHook;
-import frc.robot.commands.RunShooter;
-import frc.robot.commands.ShooterPistonToggle;
-import frc.robot.commands.ShooterWithLimelight;
-import frc.robot.commands.SimpleShooter;
 import frc.robot.commands.SmartDashboardCommand;
-import frc.robot.commands.TestDriveCommand;
-import frc.robot.commands.TestRotateModules;
-import frc.robot.commands.TurretRotate;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -66,40 +55,16 @@ public class RobotContainer {
   
   //Regular Commands
   private final DriveWithXbox driveWithXbox;
-  private final TestRotateModules testRotateModules;
-  private final TestDriveCommand testDriveCommand;
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
-  //private final RecalibrateModules recalibrateModules;
-  private final ClimbPistonsUp climbPistonsUp;
-  private final ClimbPistonDown climbPistonsDown;
-  private final ShooterPistonToggle shooterPistonToggle;
-  private final RunFeeder runFeeder;
-  private final TurretRotate turretRotate;
-  private final ShooterWithLimelight shooterWithPiston;
 
    
   //Command Groups
 
   
-  // Mult Commands
-  public Command ShooterCommand(double velocity, double timeoutSeconds) {
-    Command m_turretCommand = new RunShooter(velocity, timeoutSeconds, turret);
-    return m_turretCommand;
-  }
-
-  public Command HookCommand(double speed) {
-    Command m_climbCommand = new RunHook(speed, pneumatics);
-    return m_climbCommand;
-  }
-
   public Command WaitCommand(double timeout) {
     Command m_waitCommand = new WaitCommand(timeout);
     return m_waitCommand;
-  }
-  public Command SimpleShootCommand(double velocity){
-    Command m_simpleShooter = new SimpleShooter(velocity, turret, pneumatics);
-    return m_simpleShooter;
   }
 
   /**
@@ -120,22 +85,6 @@ public class RobotContainer {
 
     smartDashboardCommand = new SmartDashboardCommand();
 
-    testDriveCommand = new TestDriveCommand(drivetrain);
-    //testDriveCommand.addRequirements(drivetrain);
-    //drivetrain.setDefaultCommand(testDriveCommand);
-
-    //Other commands
-    climbPistonsUp = new ClimbPistonsUp(pneumatics, fightstick);
-    climbPistonsDown = new ClimbPistonDown(pneumatics, fightstick);
-    shooterPistonToggle = new ShooterPistonToggle(pneumatics);
-    runFeeder = new RunFeeder(feeder);
-    turretRotate = new TurretRotate(turret, limelight, xbox2);
-    shooterWithPiston = new ShooterWithLimelight(7800, turret, pneumatics, limelight);
-    
-
-    //Auto Setup
-    testRotateModules = new TestRotateModules(drivetrain);
-
 
     configureButtonBindings();
 
@@ -143,7 +92,7 @@ public class RobotContainer {
 
     //recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
-    DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand.alongWith(turretRotate)));
+    DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand));
     
     //drivetrain.setDefaultCommand(recalibrateModules);
     drivetrain.setDefaultCommand(DWX_SDC_TUR);
@@ -160,9 +109,6 @@ public class RobotContainer {
     //P1 BUTTONS
     JoystickButton DriverA = new JoystickButton(xbox, XboxController.Button.kA.value);
     JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
-
-    DriverA.whenPressed(shooterWithPiston);
-    DriverB.whileHeld(runFeeder);
     
     //P2 BUTTONS
     JoystickButton Driver2A = new JoystickButton(xbox2, XboxController.Button.kA.value);
@@ -188,10 +134,6 @@ public class RobotContainer {
     JoystickButton FightstickY = new JoystickButton(fightstick, 4);
     JoystickButton FightstickL3 = new JoystickButton(fightstick, 9);
     JoystickButton FightstickR3 = new JoystickButton(fightstick, 10);
-
-    
-    FightstickL3.whenPressed(climbPistonsUp);
-    FightstickR3.whenPressed(climbPistonsDown);
     
     
   }

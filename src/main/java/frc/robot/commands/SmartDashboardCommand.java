@@ -82,7 +82,7 @@ public class SmartDashboardCommand extends CommandBase {
     }
 
     //LIMELIGHT VARS
-
+    /*
     LimeLightSubsystem limelight = new LimeLightSubsystem();
 
     limelight.EnableLED();
@@ -106,7 +106,7 @@ public class SmartDashboardCommand extends CommandBase {
       SmartDashboard.putString(splitSplitStringArrayTUR[0], splitSplitStringArrayTUR[1]);
 
     }
-
+    */
     
 
   }  

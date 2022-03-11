@@ -112,17 +112,17 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateModuleNonLinear(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 1);
 
       //Set speeds for modules
-      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());
-      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed * RobotContainer.xbox.getLeftTriggerAxis());
-      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());
-      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed * RobotContainer.xbox.getLeftTriggerAxis());
+      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
+      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
+      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
+      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
     }
 
     //Show important values on dashboard
-    driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "FR Module/" + "Speed: " + String.valueOf(frontRightSpeed) + " Angle: " + String.valueOf(Math.atan2(B, C)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "RL Module/" + "Speed: " + String.valueOf(rearLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(A, D)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "RR Module/" + "Speed: " + String.valueOf(rearRightSpeed) + " Angle: " + String.valueOf(Math.atan2(A, C)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = driveWithXboxDashboard + "FR Module/" + "Speed: " + String.valueOf(frontRightSpeed) + " Angle: " + String.valueOf(Math.atan2(B, C)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = driveWithXboxDashboard + "RL Module/" + "Speed: " + String.valueOf(rearLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(A, D)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = driveWithXboxDashboard + "RR Module/" + "Speed: " + String.valueOf(rearRightSpeed) + " Angle: " + String.valueOf(Math.atan2(A, C)*(180/Math.PI)) + ";";
     driveWithXboxDashboard = driveWithXboxDashboard + "NavX Yaw/" + String.valueOf(drivetrain.getNavXOutput()) + ";";
 
 
