@@ -119,14 +119,14 @@ public class RobotContainer {
     JoystickButton Driver2RB = new JoystickButton(xbox2, 6);
 
     //7600 works from close safe zone
-    //Driver2A.whenPressed(SimpleShootCommand(7600));
-    //Driver2B.whenPressed(SimpleShootCommand(8400));
+    Driver2A.whenPressed(SimpleShootCommand(7600));
+    Driver2B.whenPressed(SimpleShootCommand(8400));
     //9200 works from far safe zone
-    //Driver2Y.whenPressed(SimpleShootCommand(9200));
-    //Driver2X.whenPressed(SimpleShootCommand(4000));
+    Driver2Y.whenPressed(SimpleShootCommand(9200));
+    Driver2X.whenPressed(SimpleShootCommand(4000));
 
-    //Driver2LB.whileHeld(HookCommand(.5));
-    //Driver2RB.whileHeld(HookCommand(-.5));
+    Driver2LB.whileHeld(HookCommand(.5));
+    Driver2RB.whileHeld(HookCommand(-.5));
 
 
     //FIGHTSTICK BUTTONS
