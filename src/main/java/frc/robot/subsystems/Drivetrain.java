@@ -148,9 +148,9 @@ public class Drivetrain extends SubsystemBase {
     drivetrainDashboard = drivetrainDashboard + "rearRight rot encoder/" + getRotEncoderValue(SwerveModule.REAR_RIGHT) + ";";
     drivetrainDashboard = drivetrainDashboard + "rearRight PID/" + getRotPIDOutput(SwerveModule.REAR_RIGHT) + ";"; 
 
-    drivetrainDashboard = drivetrainDashboard + "odometry X/" + odometry.getPoseMeters().getX() + ";";
-    drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
-    drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees();
+    //drivetrainDashboard = drivetrainDashboard + "odometry X/" + odometry.getPoseMeters().getX() + ";";
+    //drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
+    //drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees();
 
   }
 
@@ -499,29 +499,6 @@ public class Drivetrain extends SubsystemBase {
 public double customPID(double target){
   return Math.pow((target - getNavXOutput())/180, 2);
 }
-
-
-  public String sendDashboard(){
-    
-    String drivetrainDashboard;
-
-    drivetrainDashboard = "frontLeft rot encoder/" + getRotEncoderValue(SwerveModule.FRONT_LEFT) + ";";
-    drivetrainDashboard = drivetrainDashboard + "frontLeft PID/" + getRotPIDOutput(SwerveModule.FRONT_LEFT) + ";";
-
-    drivetrainDashboard = drivetrainDashboard + "frontRight rot encoder/" + getRotEncoderValue(SwerveModule.FRONT_RIGHT) + ";";
-    drivetrainDashboard = drivetrainDashboard + "frontRight PID/" + getRotPIDOutput(SwerveModule.FRONT_RIGHT) + ";";
-
-    drivetrainDashboard = drivetrainDashboard + "rearLeft rot encoder/" + getRotEncoderValue(SwerveModule.REAR_LEFT) + ";";
-    drivetrainDashboard = drivetrainDashboard + "rearLeft PID/" + getRotPIDOutput(SwerveModule.REAR_LEFT) + ";";
-
-    drivetrainDashboard = drivetrainDashboard + "rearRight rot encoder/" + getRotEncoderValue(SwerveModule.REAR_RIGHT) + ";";
-    drivetrainDashboard = drivetrainDashboard + "rearRight PID/" + getRotPIDOutput(SwerveModule.REAR_RIGHT);
-
-    return drivetrainDashboard;
-  }
-
-
-
 
 
 
