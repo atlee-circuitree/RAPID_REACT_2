@@ -18,36 +18,6 @@ import edu.wpi.first.wpilibj.PWM;
 import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
-
-  // Giant Chunk of Copy-Paste Code
-  // https://cdn.shopify.com/s/files/1/1518/8108/files/Armabot_A0085_Turret240_Encoder_Board_RevB.PDF
-  /*
-  public class AS5600EncoderPwm {
-    private final SensorCollection sensors;
-    private volatile int lastValue = Integer.MIN_VALUE;
-    public AS5600EncoderPwm(SensorCollection sensors) {
-    this.sensors = sensors;
-    }
-    public int getPwmPosition() {
-    int raw = sensors.getPulseWidthRiseToFallUs();
-    if (raw == 0) {
-    int lastValue = this.lastValue;
-    if (lastValue == Integer.MIN_VALUE) {
-    return 0;
-    }
-    return lastValue;
-    }
-    int actualValue = Math.min(4096, raw - 128);
-    lastValue = actualValue;
-    return actualValue;
-    }
-   }
-   */
-
-  //private final WPI_TalonSRX yourTalon = new WPI_TalonSRX(1);
-  //private final AS5600EncoderPwm encoder = new
-  //AS5600EncoderPwm(yourTalon.getSensorCollection());
-
    
   TalonSRX topShootMotor = null;
   TalonSRX bottomShootMotor = null;

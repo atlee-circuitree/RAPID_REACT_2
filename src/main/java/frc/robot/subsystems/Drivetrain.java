@@ -137,20 +137,24 @@ public class Drivetrain extends SubsystemBase {
     new SwerveModuleState(rearRightDrvMotor.getSelectedSensorVelocity(), Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_RIGHT))));
 
     drivetrainDashboard = "frontLeft rot encoder/" + getRotEncoderValue(SwerveModule.FRONT_LEFT) + ";";
-    drivetrainDashboard = drivetrainDashboard + "frontLeft PID/" + getRotPIDOutput(SwerveModule.FRONT_LEFT) + ";";
+    drivetrainDashboard = drivetrainDashboard + "frontLeft PID Output/" + getRotPIDOutput(SwerveModule.FRONT_LEFT) + ";";
+    drivetrainDashboard = drivetrainDashboard + "frontLeft PID Setpoint/" + frontLeftPID.getSetpoint() + ";";
 
     drivetrainDashboard = drivetrainDashboard + "frontRight rot encoder/" + getRotEncoderValue(SwerveModule.FRONT_RIGHT) + ";";
     drivetrainDashboard = drivetrainDashboard + "frontRight PID/" + getRotPIDOutput(SwerveModule.FRONT_RIGHT) + ";";
+    drivetrainDashboard = drivetrainDashboard + "frontRight PID Setpoint/" + frontRightPID.getSetpoint() + ";";
 
     drivetrainDashboard = drivetrainDashboard + "rearLeft rot encoder/" + getRotEncoderValue(SwerveModule.REAR_LEFT) + ";";
     drivetrainDashboard = drivetrainDashboard + "rearLeft PID/" + getRotPIDOutput(SwerveModule.REAR_LEFT) + ";";
+    drivetrainDashboard = drivetrainDashboard + "rearleft PID Setpoint/" + rearLeftPID.getSetpoint() + ";";
 
     drivetrainDashboard = drivetrainDashboard + "rearRight rot encoder/" + getRotEncoderValue(SwerveModule.REAR_RIGHT) + ";";
-    drivetrainDashboard = drivetrainDashboard + "rearRight PID/" + getRotPIDOutput(SwerveModule.REAR_RIGHT) + ";"; 
+    drivetrainDashboard = drivetrainDashboard + "rearRight PID/" + getRotPIDOutput(SwerveModule.REAR_RIGHT) + ";";
+    drivetrainDashboard = drivetrainDashboard + "rearRight PID Setpoint/" + rearRightPID.getSetpoint() + ";"; 
 
-    //drivetrainDashboard = drivetrainDashboard + "odometry X/" + odometry.getPoseMeters().getX() + ";";
-    //drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
-    //drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees();
+    drivetrainDashboard = drivetrainDashboard + "odometry X/" + odometry.getPoseMeters().getX() + ";";
+    drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
+    drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees();
 
   }
 
@@ -174,94 +178,9 @@ public class Drivetrain extends SubsystemBase {
   //DRIVE/ROTATION
   //------------------------------------------------------------------------------------------------------------------------------------
 
-  public void rotateAllModulesNonLinear(double targetDegrees, double speed){
-
-    frontLeftPID.setSetpoint(targetDegrees);
-    frontRightPID.setSetpoint(targetDegrees);
-    rearLeftPID.setSetpoint(targetDegrees);
-    rearRightPID.setSetpoint(targetDegrees);
-
-    //FRONT LEFT
-    if(frontLeftPID.atSetpoint()){
-      frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else{
-      frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_LEFT), -speed, speed));
-    }
-
-    //FRONT RIGHT
-    if(frontRightPID.atSetpoint()){
-      frontRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else{
-      frontRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_RIGHT), -speed, speed));
-    }
-
-    //REAR LEFT
-    if(rearLeftPID.atSetpoint()){
-      rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else{
-      rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_LEFT), -speed, speed));
-    }
-
-    //REAR RIGHT
-    if(rearRightPID.atSetpoint()){
-      rearRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else{
-      rearRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_RIGHT), -speed, speed));
-    }
-
-  } 
-
 
   //The only difference between rotateAllModulesNonLinear() and rotateAllModulesLinear() is that the non linear is meant to be
   //called in a bigger loop, and the linear one makes its own loop
-
-  public void rotateAllModulesLinear(double targetDegrees, double speed){
-
-    frontLeftPID.setSetpoint(targetDegrees);
-    frontRightPID.setSetpoint(targetDegrees);
-    rearLeftPID.setSetpoint(targetDegrees);
-    rearRightPID.setSetpoint(targetDegrees);
-
-    while(!frontLeftPID.atSetpoint() || !frontRightPID.atSetpoint() || !rearLeftPID.atSetpoint() || !rearRightPID.atSetpoint()){
-
-      //FRONT LEFT
-      if(frontLeftPID.atSetpoint()){
-        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_LEFT), -speed, speed));
-      }
-
-      //FRONT RIGHT
-      if(frontRightPID.atSetpoint()){
-        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_RIGHT), -speed, speed));
-      }
-
-      //REAR LEFT
-      if(rearLeftPID.atSetpoint()){
-        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_LEFT), -speed, speed));
-      }
-
-      //REAR RIGHT
-      if(rearRightPID.atSetpoint()){
-        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_RIGHT), -speed, speed));
-      }
-    }
-
-  }
 
 
   public void driveAllModulesNonLinear(double speed){
@@ -341,6 +260,49 @@ public class Drivetrain extends SubsystemBase {
     }
 
   }
+
+
+  public void rotateModule(SwerveModule module, double targetDegrees, double speedMod){
+    
+    setRotPIDSetpoint(module, targetDegrees);
+
+    if(module == SwerveModule.FRONT_LEFT){
+      if(frontLeftPID.atSetpoint()){
+        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+      }
+      else{
+        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, getRotPIDOutput(module));
+      }
+    }
+    if(module == SwerveModule.FRONT_RIGHT){
+      if(frontRightPID.atSetpoint()){
+        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+      }
+      else{
+        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, getRotPIDOutput(module));
+      }
+    }
+    if(module == SwerveModule.REAR_LEFT){
+      if(rearLeftPID.atSetpoint()){
+        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+      }
+      else{
+        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, getRotPIDOutput(module));
+      }
+    }
+    if(module == SwerveModule.REAR_RIGHT){
+      if(rearRightPID.atSetpoint()){
+        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+      }
+      else{
+        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, getRotPIDOutput(module));
+      }
+    }
+
+  }
+
+
+
 
 
 
@@ -443,32 +405,50 @@ public class Drivetrain extends SubsystemBase {
   public double getRotPIDOutput(SwerveModule module){
     if(module == SwerveModule.FRONT_LEFT){
       double measurement = frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT));
-     
-        return frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT));
+        
+      
+      return MathUtil.clamp(measurement, -1, 1);
      
     }
     else if(module == SwerveModule.FRONT_RIGHT){
       double measurement = frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
       
       
-      return frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
+      return MathUtil.clamp(measurement, -1, 1);
       
     }
     else if(module == SwerveModule.REAR_LEFT){
       double measurement = rearLeftPID.calculate(getRotEncoderValue(SwerveModule.REAR_LEFT));
       
       
-        return rearLeftPID.calculate(getRotEncoderValue(SwerveModule.REAR_LEFT));
+      return MathUtil.clamp(measurement, -1, 1);
     
     }
     else if(module == SwerveModule.REAR_RIGHT){
       double measurement = rearRightPID.calculate(getRotEncoderValue(SwerveModule.REAR_RIGHT));
       
-        return rearRightPID.calculate(getRotEncoderValue(SwerveModule.REAR_RIGHT));
+      return MathUtil.clamp(measurement, -1, 1);
     
     }
     else{
       return 0;
+    }
+  }
+
+  public void setRotPIDSetpoint(SwerveModule module, double setpoint){
+    if(module == SwerveModule.FRONT_LEFT){
+      frontLeftPID.setSetpoint(setpoint);
+    }
+    else if(module == SwerveModule.FRONT_RIGHT){
+      frontRightPID.setSetpoint(setpoint);
+    }
+    else if(module == SwerveModule.REAR_LEFT){
+      rearLeftPID.setSetpoint(setpoint);
+    }
+    else if(module == SwerveModule.REAR_RIGHT){
+      rearRightPID.setSetpoint(setpoint);
+    }
+    else{
     }
   }
   
@@ -499,7 +479,6 @@ public class Drivetrain extends SubsystemBase {
 public double customPID(double target){
   return Math.pow((target - getNavXOutput())/180, 2);
 }
-
 
 
 

@@ -55,7 +55,8 @@ public class SmartDashboardCommand extends CommandBase {
       for(int i = 0; i <= splitStringArrayDWX.length-1; i++){
 
         String[] splitSplitStringArrayDWX = splitStringArrayDWX[i].split("/");
-        SmartDashboard.putString(splitSplitStringArrayDWX[0], splitSplitStringArrayDWX[1]);
+        //SmartDashboard.putString(splitSplitStringArrayDWX[0], splitSplitStringArrayDWX[1]);
+        SmartDashboard.putNumber(splitSplitStringArrayDWX[0], Double.valueOf(splitSplitStringArrayDWX[1]));
 
       }
     }
