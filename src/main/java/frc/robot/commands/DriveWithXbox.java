@@ -99,17 +99,17 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, 0);
 
-      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 0);
-      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 0);
-      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 0);
-      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 0);
     }
     else{
       //Set angles for modules (change speed mod later if needed)
-      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 1);
-      drivetrain.rotateModuleNonLinear(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 1);
-      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 1);
-      drivetrain.rotateModuleNonLinear(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 1);
 
       //Set speeds for modules
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);

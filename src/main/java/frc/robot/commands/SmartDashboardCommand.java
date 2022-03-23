@@ -48,7 +48,7 @@ public class SmartDashboardCommand extends CommandBase {
     //LOCAL VARS FROM COMMANDS
 
     //DriveWithXbox display local vars
-
+    /*
     try{
       String[] splitStringArrayDWX = DriveWithXbox.driveWithXboxDashboard.split(";");
 
@@ -56,14 +56,14 @@ public class SmartDashboardCommand extends CommandBase {
 
         String[] splitSplitStringArrayDWX = splitStringArrayDWX[i].split("/");
         //SmartDashboard.putString(splitSplitStringArrayDWX[0], splitSplitStringArrayDWX[1]);
-        SmartDashboard.putNumber(splitSplitStringArrayDWX[0], Double.valueOf(splitSplitStringArrayDWX[1]));
+        SmartDashboard.putString(splitSplitStringArrayDWX[0], splitSplitStringArrayDWX[1]);
 
       }
     }
     catch(NullPointerException excpetion){
       //Do nothing
     }
-    
+    */
 
     //VARS FROM ROBOTCONTAINER AND DRIVETRAIN
 
