@@ -102,11 +102,11 @@ public class Drivetrain extends SubsystemBase {
     //rearLeftPID = new PIDController(0.0035, 0.00002, 0.00);
     //rearRightPID = new PIDController(0.0035, 0.00002, 0.00);
 
-    //Larson and Panten zeroed out Integral value. 2/27 5:01pm. not sure if these are the perfect values, but they work good enough, so.....
-    frontLeftPID = new PIDController(0.9, 0.02, 0.00);
-    frontRightPID = new PIDController(0.9, 0.02, 0.00);
-    rearLeftPID = new PIDController(0.9, 0.02, 0.00);
-    rearRightPID = new PIDController(0.9, 0.02, 0.00);
+    //Best values so far: 0.65, 0.065, 0.01
+    frontLeftPID = new PIDController(1, 0.0, 0.00);
+    frontRightPID = new PIDController(1, 0.0, 0.00);
+    rearLeftPID = new PIDController(1, 0.0, 0.00);
+    rearRightPID = new PIDController(1, 0.0, 0.00);
 
     frontLeftPID.enableContinuousInput(-180, 180);
     frontRightPID.enableContinuousInput(-180, 180);
@@ -370,6 +370,8 @@ public class Drivetrain extends SubsystemBase {
     if(encoderValue < 0){
       encoderValue = encoderValue + 360;
     }
+    
+    
     //Signs values ([-180,180] not [0,360])
     if(encoderValue > 180){
       encoderValue = encoderValue - 360;
@@ -380,21 +382,19 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getAbsoluteRotEncoderValue(SwerveModule module){
-
-    double encoderValue = 0;
   
     //Assigns offset encoder absolute position based on input SwerveModule parameter
     if(module == SwerveModule.FRONT_LEFT){
-      return encoderValue = frontLeftRotEncoder.getAbsolutePosition();
+      return frontLeftRotEncoder.getAbsolutePosition();
     }
     else if(module == SwerveModule.FRONT_RIGHT){
-      return encoderValue = frontRightRotEncoder.getAbsolutePosition();
+      return frontRightRotEncoder.getAbsolutePosition();
     }
     else if(module == SwerveModule.REAR_LEFT){
-      return encoderValue = rearLeftRotEncoder.getAbsolutePosition();
+      return rearLeftRotEncoder.getAbsolutePosition();
     }
     else if(module == SwerveModule.REAR_RIGHT){
-      return encoderValue = rearRightRotEncoder.getAbsolutePosition();
+      return rearRightRotEncoder.getAbsolutePosition();
     }
     else{
       return 0;
@@ -404,15 +404,27 @@ public class Drivetrain extends SubsystemBase {
 
   public double getRotPIDOutput(SwerveModule module){
     if(module == SwerveModule.FRONT_LEFT){
-      double measurement = frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT));
-        
+      double measurement = MathUtil.clamp(frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT)), -180, 180);
       
-      return MathUtil.clamp(measurement, -180, 180);
+      if(measurement/180 < 0.08 && measurement/180 > 0){
+        measurement = 0.08*180;
+      }
+      else if(measurement/180 > -0.08 && measurement/180 < 0){
+        measurement = -0.08*180;
+      }
+      
+      return measurement;
      
     }
     else if(module == SwerveModule.FRONT_RIGHT){
       double measurement = frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
       
+      if(measurement/180 < 0.08 && measurement/180 > 0){
+        measurement = 0.08*180;
+      }
+      else if(measurement/180 > -0.08 && measurement/180 < 0){
+        measurement = -0.08*180;
+      }
       
       return MathUtil.clamp(measurement, -180, 180);
       
@@ -420,15 +432,27 @@ public class Drivetrain extends SubsystemBase {
     else if(module == SwerveModule.REAR_LEFT){
       double measurement = rearLeftPID.calculate(getRotEncoderValue(SwerveModule.REAR_LEFT));
       
+      if(measurement/180 < 0.08 && measurement/180 > 0){
+        measurement = 0.08*180;
+      }
+      else if(measurement/180 > -0.08 && measurement/180 < 0){
+        measurement = -0.08*180;
+      }
       
-      return MathUtil.clamp(measurement, -1, 1);
+      return MathUtil.clamp(measurement, -180, 180);
     
     }
     else if(module == SwerveModule.REAR_RIGHT){
       double measurement = rearRightPID.calculate(getRotEncoderValue(SwerveModule.REAR_RIGHT));
       
-      return MathUtil.clamp(measurement, -1, 1);
-    
+      if(measurement/180 < 0.08 && measurement/180 > 0){
+        measurement = 0.08*180;
+      }
+      else if(measurement/180 > -0.08 && measurement/180 < 0){
+        measurement = -0.08*180;
+      }
+
+      return MathUtil.clamp(measurement, -180, 180);
     }
     else{
       return 0;

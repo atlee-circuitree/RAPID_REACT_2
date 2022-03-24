@@ -112,11 +112,17 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 1);
 
       //Set speeds for modules
-      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
-      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
-      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
-      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed * RobotContainer.xbox.getLeftTriggerAxis()*0);
+      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());
+      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed * RobotContainer.xbox.getLeftTriggerAxis());
+      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());
+      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed * RobotContainer.xbox.getLeftTriggerAxis());
     }
+
+    //When going full positive turning
+    //FL should be 45
+    //FR should be 135
+    //RL should be -45
+    //RR should be -135
 
     //Show important values on dashboard
     driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";

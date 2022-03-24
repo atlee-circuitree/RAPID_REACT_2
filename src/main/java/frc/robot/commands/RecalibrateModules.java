@@ -61,10 +61,10 @@ public class RecalibrateModules extends CommandBase {
 
     SmartDashboard.putNumber("testSpeed", speed);
     SmartDashboard.putNumber("Module selected", moduleSelected);
-    SmartDashboard.putNumber("FL Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.FRONT_LEFT));
-    SmartDashboard.putNumber("FR Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.FRONT_RIGHT));
-    SmartDashboard.putNumber("RL Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.REAR_LEFT));
-    SmartDashboard.putNumber("RR Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.REAR_RIGHT));
+    SmartDashboard.putNumber("FL Absolute Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.FRONT_LEFT));
+    SmartDashboard.putNumber("FR Absloute Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.FRONT_RIGHT));
+    SmartDashboard.putNumber("RL Absolute Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.REAR_LEFT));
+    SmartDashboard.putNumber("RR Absolute Encoder", drivetrain.getAbsoluteRotEncoderValue(SwerveModule.REAR_RIGHT));
 
   }
 

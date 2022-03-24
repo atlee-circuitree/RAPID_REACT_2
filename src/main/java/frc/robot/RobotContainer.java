@@ -57,7 +57,7 @@ public class RobotContainer {
   private final DriveWithXbox driveWithXbox;
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
-
+  private final RecalibrateModules recalibrateModules;
    
   //Command Groups
 
@@ -90,7 +90,7 @@ public class RobotContainer {
 
     //Other Setup
 
-    //recalibrateModules = new RecalibrateModules(drivetrain, xbox);
+    recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
     DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand));
     
