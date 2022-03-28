@@ -103,10 +103,10 @@ public class Drivetrain extends SubsystemBase {
     //rearRightPID = new PIDController(0.0035, 0.00002, 0.00);
 
     //Best values so far: 0.65, 0.065, 0.01
-    frontLeftPID = new PIDController(1, 0.0, 0.00);
-    frontRightPID = new PIDController(1, 0.0, 0.00);
-    rearLeftPID = new PIDController(1, 0.0, 0.00);
-    rearRightPID = new PIDController(1, 0.0, 0.00);
+    frontLeftPID = new PIDController(Constants.rotPID_P, Constants.rotPID_I, Constants.rotPID_D);
+    frontRightPID = new PIDController(Constants.rotPID_P, Constants.rotPID_I, Constants.rotPID_D);
+    rearLeftPID = new PIDController(Constants.rotPID_P, Constants.rotPID_I, Constants.rotPID_D);
+    rearRightPID = new PIDController(Constants.rotPID_P, Constants.rotPID_I, Constants.rotPID_D);
 
     frontLeftPID.enableContinuousInput(-180, 180);
     frontRightPID.enableContinuousInput(-180, 180);
@@ -406,11 +406,11 @@ public class Drivetrain extends SubsystemBase {
     if(module == SwerveModule.FRONT_LEFT){
       double measurement = MathUtil.clamp(frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT)), -180, 180);
       
-      if(measurement/180 < 0.08 && measurement/180 > 0){
-        measurement = 0.08*180;
+      if(measurement/180 < Constants.rotPIDMinValue && measurement/180 > 0){
+        measurement = Constants.rotPIDMinValue*180;
       }
-      else if(measurement/180 > -0.08 && measurement/180 < 0){
-        measurement = -0.08*180;
+      else if(measurement/180 > -Constants.rotPIDMinValue && measurement/180 < 0){
+        measurement = -Constants.rotPIDMinValue*180;
       }
       
       return measurement;
@@ -419,11 +419,11 @@ public class Drivetrain extends SubsystemBase {
     else if(module == SwerveModule.FRONT_RIGHT){
       double measurement = frontRightPID.calculate(getRotEncoderValue(SwerveModule.FRONT_RIGHT));
       
-      if(measurement/180 < 0.08 && measurement/180 > 0){
-        measurement = 0.08*180;
+      if(measurement/180 < Constants.rotPIDMinValue && measurement/180 > 0){
+        measurement = Constants.rotPIDMinValue*180;
       }
-      else if(measurement/180 > -0.08 && measurement/180 < 0){
-        measurement = -0.08*180;
+      else if(measurement/180 > -Constants.rotPIDMinValue && measurement/180 < 0){
+        measurement = -Constants.rotPIDMinValue*180;
       }
       
       return MathUtil.clamp(measurement, -180, 180);
@@ -432,11 +432,11 @@ public class Drivetrain extends SubsystemBase {
     else if(module == SwerveModule.REAR_LEFT){
       double measurement = rearLeftPID.calculate(getRotEncoderValue(SwerveModule.REAR_LEFT));
       
-      if(measurement/180 < 0.08 && measurement/180 > 0){
-        measurement = 0.08*180;
+      if(measurement/180 < Constants.rotPIDMinValue && measurement/180 > 0){
+        measurement = Constants.rotPIDMinValue*180;
       }
-      else if(measurement/180 > -0.08 && measurement/180 < 0){
-        measurement = -0.08*180;
+      else if(measurement/180 > -Constants.rotPIDMinValue && measurement/180 < 0){
+        measurement = -Constants.rotPIDMinValue*180;
       }
       
       return MathUtil.clamp(measurement, -180, 180);
@@ -445,11 +445,11 @@ public class Drivetrain extends SubsystemBase {
     else if(module == SwerveModule.REAR_RIGHT){
       double measurement = rearRightPID.calculate(getRotEncoderValue(SwerveModule.REAR_RIGHT));
       
-      if(measurement/180 < 0.08 && measurement/180 > 0){
-        measurement = 0.08*180;
+      if(measurement/180 < Constants.rotPIDMinValue && measurement/180 > 0){
+        measurement = Constants.rotPIDMinValue*180;
       }
-      else if(measurement/180 > -0.08 && measurement/180 < 0){
-        measurement = -0.08*180;
+      else if(measurement/180 > -Constants.rotPIDMinValue && measurement/180 < 0){
+        measurement = -Constants.rotPIDMinValue*180;
       }
 
       return MathUtil.clamp(measurement, -180, 180);

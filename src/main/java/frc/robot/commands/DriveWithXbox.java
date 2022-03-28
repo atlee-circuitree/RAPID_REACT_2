@@ -106,10 +106,15 @@ public class DriveWithXbox extends CommandBase {
     }
     else{
       //Set angles for modules (change speed mod later if needed)
-      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 1);
-      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 1);
-      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 1);
-      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 1);
+      //Original angle values
+      //FL: B, D
+      //FR: B, C
+      //RL: A, D
+      //RR: A, C
+      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, C)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 1);
 
       //Set speeds for modules
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());

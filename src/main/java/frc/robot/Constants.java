@@ -60,6 +60,13 @@ public final class Constants {
 
     public static final int xboxControllerPort = 0;
 
+
+    public static final double rotPID_P = 1;
+    public static final double rotPID_I = 0.00;
+    public static final double rotPID_D = 0.00;
+    public static final double rotPIDMinValue = 0.07;
+
+
     //Pneumatics
     
     public static final int climbLeftPnumaticDeploy = 10;
