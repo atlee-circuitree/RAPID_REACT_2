@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -16,6 +18,9 @@ import java.lang.Math;
 public class DriveWithXbox extends CommandBase {
 
   private final Drivetrain drivetrain;
+  private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(0.8);
+  private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(0.8);
+  private SlewRateLimiter slewRateLimiterZ = new SlewRateLimiter(0.8);
 
   public static String driveWithXboxDashboard;
   
@@ -52,9 +57,9 @@ public class DriveWithXbox extends CommandBase {
     */
 
     //Define robot target vector variables (X,Y,Z respectively)  
-    double forward = -RobotContainer.xbox.getLeftY();
-    double strafe = -RobotContainer.xbox.getLeftX();
-    double rotation = -RobotContainer.xbox.getRightX();
+    double forward = -slewRateLimiterX.calculate(RobotContainer.xbox.getLeftY());
+    double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
+    double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
@@ -99,10 +104,10 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, 0);
 
-      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, D)*(180/Math.PI), 0);
-      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, C)*(180/Math.PI), 0);
-      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, D)*(180/Math.PI), 0);
-      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, C)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, C)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 0);
     }
     else{
       //Set angles for modules (change speed mod later if needed)
@@ -117,10 +122,10 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 1);
 
       //Set speeds for modules
-      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());
-      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed * RobotContainer.xbox.getLeftTriggerAxis());
-      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed * RobotContainer.xbox.getLeftTriggerAxis());
-      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed * RobotContainer.xbox.getLeftTriggerAxis());
+      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, -frontLeftSpeed);
+      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed);
+      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed);
+      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed);
     }
 
     //When going full positive turning
@@ -130,16 +135,17 @@ public class DriveWithXbox extends CommandBase {
     //RR should be -135
 
     //Show important values on dashboard
-    driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "FR Module/" + "Speed: " + String.valueOf(frontRightSpeed) + " Angle: " + String.valueOf(Math.atan2(B, C)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "RL Module/" + "Speed: " + String.valueOf(rearLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(A, D)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "RR Module/" + "Speed: " + String.valueOf(rearRightSpeed) + " Angle: " + String.valueOf(Math.atan2(A, C)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, C)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = driveWithXboxDashboard + "FR Module/" + "Speed: " + String.valueOf(frontRightSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = driveWithXboxDashboard + "RL Module/" + "Speed: " + String.valueOf(rearLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(A, C)*(180/Math.PI)) + ";";
+    //driveWithXboxDashboard = driveWithXboxDashboard + "RR Module/" + "Speed: " + String.valueOf(rearRightSpeed) + " Angle: " + String.valueOf(Math.atan2(A, D)*(180/Math.PI)) + ";";
     driveWithXboxDashboard = driveWithXboxDashboard + "NavX Yaw/" + String.valueOf(drivetrain.getNavXOutput()) + ";";
 
 
     //DEBUG
     if(RobotContainer.xbox.getRightStickButton()){
       drivetrain.zeroNavXYaw();
+      drivetrain.resetOdometry(new Pose2d());
     }
   }  
 
