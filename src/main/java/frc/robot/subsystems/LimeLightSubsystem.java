@@ -178,6 +178,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     limelightDashboard = "Limelight Horizontal/" + dbl_tx + ";";
     limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_ty + ";";
     limelightDashboard = limelightDashboard + "Theoretical Distance To Target/" + getDistanceToTarget() + ";";
+    
   }
 
 
@@ -188,7 +189,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     double targetOffsetAngle_Vertical = ty;
 
     //how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 45.0;
+    double limelightMountAngleDegrees = 33.0;
 
     //distance from the center of the Limelight lens to the floor
     double limelightHeightInches = 26.0;
@@ -201,8 +202,17 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     //calculate distance
     double distanceFromLimelightToGoalInches = (goalHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
+    double distanceFromLimelighttoGoalMeters = distanceFromLimelightToGoalInches / 39.37;
+    //return in meters
+    if (HasValidTarget() == false) {
 
-    return distanceFromLimelightToGoalInches;
+      return 0;
+
+    } else {
+
+      return distanceFromLimelighttoGoalMeters;
+
+    }
 
   }
  

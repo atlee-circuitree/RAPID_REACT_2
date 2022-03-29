@@ -33,8 +33,8 @@ public class TurretSubsystem extends SubsystemBase {
   TalonSRX bottomShootMotor = null;
   CANSparkMax turretMotor = null;
   RelativeEncoder turretEncoder = null;
-  public double shuffleShooterTop = -SmartDashboard.getNumber("Turret Velocity", 0);
-  public double shuffleShooterBottom = SmartDashboard.getNumber("Turret Bottom Velocity", 0);
+  double shuffleShooterTop = -SmartDashboard.getNumber("Custom Top Velocity", 0);
+  double shuffleShooterBottom = SmartDashboard.getNumber("Custom Bottom Velocity", 0);
 
   public static String turretDashboard;
 
@@ -50,6 +50,9 @@ public class TurretSubsystem extends SubsystemBase {
     turretMotor = new CANSparkMax(Constants.turretMotorPort, MotorType.kBrushless);
 
     turretEncoder = turretMotor.getEncoder(Type.kHallSensor, 42);
+
+    SmartDashboard.putNumber("Custom Top Velocity", 0);
+    SmartDashboard.putNumber("Custom Bottom Velocity", 0);
   
   }
 
@@ -60,12 +63,9 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Turret Angle", getTurretEncoder());
     
     double smartVelocity = SmartDashboard.getNumber("Turret Velocity", 0);
-    SmartDashboard.putNumber("Turret Velocity", smartVelocity);
     double smartBottomMotorMod = SmartDashboard.getNumber("Turret Bottom Velocity", 1);
-    SmartDashboard.putNumber("Turret Bottom Velocity", smartBottomMotorMod);
-    SmartDashboard.putNumber("Shot Top Velocity Pos/100ms", returnTopMotorWithVelocity());
-    SmartDashboard.putNumber("Shot Bottom Velocity Pos/100ms", returnBottomMotorWithVelocity());
- 
+  
+
   }
 
   public LaunchVelocity[] getDistanceToVelocityArray(){
@@ -196,7 +196,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public double getShuffleTopMotor() {
 
-    return -SmartDashboard.getNumber("Custom Top Velocity", 0);
+    return SmartDashboard.getNumber("Custom Top Velocity", 0);
     
   }
 

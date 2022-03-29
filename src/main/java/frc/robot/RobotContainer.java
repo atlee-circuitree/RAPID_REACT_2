@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -19,6 +20,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
+import frc.robot.commands.RunFeeder;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TurretAndShoot;
 import frc.robot.subsystems.Drivetrain;
@@ -33,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -52,7 +55,7 @@ public class RobotContainer {
   private final Pneumatics pneumatics;
   private final FeederSubsystem feeder;
   private final LimeLightSubsystem limelight;
-  private final TurretSubsystem turret;
+  private final TurretSubsystem turret;  
   
   //Regular Commands
   private final DriveWithXbox driveWithXbox;
@@ -63,7 +66,11 @@ public class RobotContainer {
    
   //Command Groups
 
-  
+  public Command feederCommand(double speed) {
+    Command feedCommand = new RunFeeder(speed, feeder, pneumatics);
+    return feedCommand;
+  }
+
   public Command WaitCommand(double timeout) {
     Command m_waitCommand = new WaitCommand(timeout);
     return m_waitCommand;
@@ -91,6 +98,8 @@ public class RobotContainer {
  
     configureButtonBindings();
 
+    limelight.EnableLED();
+
     //Other Setup
 
     recalibrateModules = new RecalibrateModules(drivetrain, xbox);
@@ -113,6 +122,39 @@ public class RobotContainer {
     JoystickButton DriverA = new JoystickButton(xbox, XboxController.Button.kA.value);
     JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
     
+    BooleanSupplier isDriverLTPressed = new BooleanSupplier() {
+      
+      @Override
+      public boolean getAsBoolean() {
+        if(xbox.getLeftTriggerAxis() > 0.1){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+
+    };
+    BooleanSupplier isDriverRTPressed = new BooleanSupplier() {
+      
+      @Override
+      public boolean getAsBoolean() {
+        if(xbox.getRightTriggerAxis() > 0.1){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+
+    };
+
+    Trigger DriverLT = new Trigger(isDriverLTPressed);
+    Trigger DriverRT = new Trigger(isDriverRTPressed);
+    
+    DriverLT.whileActiveContinuous(feederCommand(-.72));
+    DriverRT.whileActiveContinuous(feederCommand(.72));
+
     //P2 BUTTONS
     JoystickButton Driver2A = new JoystickButton(xbox2, XboxController.Button.kA.value);
     JoystickButton Driver2B = new JoystickButton(xbox2, XboxController.Button.kB.value);
@@ -157,12 +199,12 @@ public class RobotContainer {
     // An example trajectory to follow.  All units in meters.
     Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
+            // Starting Position
             new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
+            // Interior Waypoints
+            List.of(new Translation2d(1, 0)),
+            // Ending Position
+            new Pose2d(2, 0, new Rotation2d(0)),
             config);
 
     var thetaController =
