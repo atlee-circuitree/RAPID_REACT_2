@@ -42,6 +42,8 @@ public class TurretAndShoot extends CommandBase {
 
   private double distance;
 
+  private double timeout = .7;
+
   Timer pneumaticTime = new Timer();
   Timer timeoutTime = new Timer();
 
@@ -140,7 +142,7 @@ public class TurretAndShoot extends CommandBase {
     }
 
     //Pneumatic logic
-    if (turret.checkShootVelocity(targetTopVelocity, targetBottomVelocity, timeoutTime) == false && InShot == true) {
+    if (turret.checkShootVelocity(targetTopVelocity, targetBottomVelocity, timeoutTime, timeout) == false && InShot == true) {
 
     pneumaticTime.reset();
 
