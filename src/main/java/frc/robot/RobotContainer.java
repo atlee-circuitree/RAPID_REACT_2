@@ -20,6 +20,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.SmartDashboardCommand;
+import frc.robot.commands.TurretAndShoot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
   private final RecalibrateModules recalibrateModules;
+  private final TurretAndShoot turretAndShoot;
    
   //Command Groups
 
@@ -85,14 +87,15 @@ public class RobotContainer {
 
     smartDashboardCommand = new SmartDashboardCommand();
 
-
+    turretAndShoot = new TurretAndShoot(turret, pneumatics, limelight, xbox2);
+ 
     configureButtonBindings();
 
     //Other Setup
 
     recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
-    DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand));
+    DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand).alongWith(turretAndShoot));
     
     //drivetrain.setDefaultCommand(recalibrateModules);
     drivetrain.setDefaultCommand(DWX_SDC_TUR);

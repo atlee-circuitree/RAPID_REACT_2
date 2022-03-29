@@ -35,7 +35,6 @@ public final class Constants {
     public static final int frontRightRotEncoderPort = 9;
     public static final int rearLeftRotEncoderPort = 10;
     public static final int rearRightRotEncoderPort = 12;
-
     
     public static final double frontLeftEncoderOffset = 153.1;
     public static final double frontRightEncoderOffset = 290.0;
@@ -47,6 +46,15 @@ public final class Constants {
     public static final int topShooterMotorPort = 13;
     public static final int bottomShooterMotorPort = 14;
 
+    public static final int lowVelocityTop = 5000;
+    public static final int lowVelocityBottom = 5000;
+
+    public static final int mediumVelocityTop = 7700;
+    public static final int mediumVelocityBottom = 8000;
+
+    public static final int highVelocityTop = 11200;
+    public static final int highVelocityBottom = 7800;
+
     public static final int turretMotorPort = 19;
 
     public static final int hookMotorPort = 18;
@@ -55,11 +63,11 @@ public final class Constants {
 
     public static final double trackwidth = 22.5;
     public static final double wheelbase = 22.5;
+
     //Distance from center of robot to any module
     public static final double drivetrainRadius = Math.sqrt(Math.pow(trackwidth, 2) + Math.pow(wheelbase, 2)); 
 
     public static final int xboxControllerPort = 0;
-
 
     public static final double rotPID_P = 1;
     public static final double rotPID_I = 0.00;
