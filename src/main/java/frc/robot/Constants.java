@@ -83,8 +83,6 @@ public final class Constants {
     public static final int climbRightPnumaticRetract = 1;
     public static final int shootPnumaticDeploy = 2;
     public static final int shootPnumaticRetract = 3;
-    public static final int kickoutPnumaticDeploy = 9;
-    public static final int kickoutPnumaticRetract = 14;
 
 
     //Instansiated in this order:

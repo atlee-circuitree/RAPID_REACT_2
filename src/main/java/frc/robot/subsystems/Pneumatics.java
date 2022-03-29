@@ -18,7 +18,6 @@ public class Pneumatics extends SubsystemBase {
   DoubleSolenoid climbLeft;
   DoubleSolenoid climbRight;
   DoubleSolenoid shooterPiston;
-  DoubleSolenoid kickoutPiston;
   CANSparkMax hookMotor;
   
   public Pneumatics() {
@@ -26,9 +25,7 @@ public class Pneumatics extends SubsystemBase {
     climbLeft = new DoubleSolenoid(15, PneumaticsModuleType.REVPH, Constants.climbLeftPnumaticDeploy, Constants.climbLeftPnumaticRetract);
     climbRight = new DoubleSolenoid(15, PneumaticsModuleType.REVPH, Constants.climbRightPnumaticDeploy, Constants.climbRightPnumaticRetract);
     shooterPiston = new DoubleSolenoid(15 , PneumaticsModuleType.REVPH, Constants.shootPnumaticDeploy, Constants.shootPnumaticRetract);
-    kickoutPiston = new DoubleSolenoid(15 , PneumaticsModuleType.REVPH, Constants.kickoutPnumaticDeploy, Constants.kickoutPnumaticRetract);
     hookMotor = new CANSparkMax(Constants.hookMotorPort, MotorType.kBrushless);
-
 
   }
 
@@ -60,17 +57,5 @@ public class Pneumatics extends SubsystemBase {
   }
   public void shooterDown(){
     shooterPiston.set(Value.kReverse);
-  }
-
-  public void kickout(){
-
-    kickoutPiston.set(Value.kForward);
-
-  }
-
-  public void kickoutRetract(){
-
-    kickoutPiston.set(Value.kReverse);
-
   }
 }

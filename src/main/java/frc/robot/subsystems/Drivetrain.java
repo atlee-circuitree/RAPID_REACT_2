@@ -96,6 +96,12 @@ public class Drivetrain extends SubsystemBase {
     rearLeftRotEncoder.setPosition(0);
     rearRightRotEncoder.setPosition(0);
 
+    //not sure if these are the perfect values, but they work good enough, so.....
+    //frontLeftPID = new PIDController(0.0035, 0.00002, 0.00);
+    //frontRightPID = new PIDController(0.0035, 0.00002, 0.00);
+    //rearLeftPID = new PIDController(0.0035, 0.00002, 0.00);
+    //rearRightPID = new PIDController(0.0035, 0.00002, 0.00);
+
     //Best values so far: 0.65, 0.065, 0.01
     frontLeftPID = new PIDController(Constants.rotPID_P, Constants.rotPID_I, Constants.rotPID_D);
     frontRightPID = new PIDController(Constants.rotPID_P, Constants.rotPID_I, Constants.rotPID_D);
@@ -125,17 +131,10 @@ public class Drivetrain extends SubsystemBase {
 
     //Updates odometry
     odometry.update(navx.getRotation2d(), 
-    new SwerveModuleState(positionChangePer100msToMetersPerSecond(frontLeftDrvMotor.getSelectedSensorVelocity()), 
-    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.FRONT_LEFT))),
-    
-    new SwerveModuleState(positionChangePer100msToMetersPerSecond(frontRightDrvMotor.getSelectedSensorVelocity()), 
-    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.FRONT_RIGHT))),
-    
-    new SwerveModuleState(positionChangePer100msToMetersPerSecond(rearLeftDrvMotor.getSelectedSensorVelocity()), 
-    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_LEFT))),
-    
-    new SwerveModuleState(positionChangePer100msToMetersPerSecond(rearRightDrvMotor.getSelectedSensorVelocity()), 
-    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_RIGHT))));
+    new SwerveModuleState(frontLeftDrvMotor.getSelectedSensorVelocity(), Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.FRONT_LEFT))),
+    new SwerveModuleState(frontRightDrvMotor.getSelectedSensorVelocity(), Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.FRONT_RIGHT))),
+    new SwerveModuleState(rearLeftDrvMotor.getSelectedSensorVelocity(), Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_LEFT))),
+    new SwerveModuleState(rearRightDrvMotor.getSelectedSensorVelocity(), Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_RIGHT))));
 
     drivetrainDashboard = "frontLeft rot encoder/" + getRotEncoderValue(SwerveModule.FRONT_LEFT) + ";";
     drivetrainDashboard = drivetrainDashboard + "frontLeft PID Output/" + getRotPIDOutput(SwerveModule.FRONT_LEFT) + ";";
@@ -153,11 +152,9 @@ public class Drivetrain extends SubsystemBase {
     drivetrainDashboard = drivetrainDashboard + "rearRight PID/" + getRotPIDOutput(SwerveModule.REAR_RIGHT) + ";";
     drivetrainDashboard = drivetrainDashboard + "rearRight PID Setpoint/" + rearRightPID.getSetpoint() + ";"; 
 
-    drivetrainDashboard = drivetrainDashboard + "odometry X/" + odometry.getPoseMeters().getX() + ";";
-    drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
-    drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees() + ";";
-
-    drivetrainDashboard = drivetrainDashboard + "FL Velocity/" + positionChangePer100msToMetersPerSecond(frontLeftDrvMotor.getSelectedSensorVelocity()) + ";";
+    //drivetrainDashboard = drivetrainDashboard + "odometry X/" + odometry.getPoseMeters().getX() + ";";
+    //drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
+    //drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees();
 
   }
 
@@ -493,21 +490,6 @@ public class Drivetrain extends SubsystemBase {
   //------------------------------------------------------------------------------------------------------------------------------------
   //OTHER FUNCTIONS
   //------------------------------------------------------------------------------------------------------------------------------------
-
-
-  public double positionChangePer100msToMetersPerSecond(double posChangePer100ms){
-    
-    //posChangePer100ms/10 = posChangePerSecond
-    //posChangePerSecond/44.9 = degreesPerSecond
-    //Math.toRadians(degreesPerSecond) = radiansPerSecond
-    //radiansPerSecond*0.1016 = metersPerSecond
-
-    double degreesPerSecond = (posChangePer100ms*10)/44.9;
-    double metersPerSecond = Math.toRadians(degreesPerSecond)*0.1016;
-
-    return metersPerSecond;
-  }
-
 
   public double mapValues(double value, double highest, double lowest){
     if(value >= 0){

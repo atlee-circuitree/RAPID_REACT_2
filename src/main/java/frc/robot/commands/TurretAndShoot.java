@@ -37,7 +37,7 @@ public class TurretAndShoot extends CommandBase {
   private double targetBottomVelocity;
 
   private boolean InShot = false;
- 
+
   private XboxController xboxController;
 
   private double distance;
@@ -85,14 +85,14 @@ public class TurretAndShoot extends CommandBase {
     adaptiveBottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
 
     //Change velocity based on what buttons are held
-    //A = Adaptive, B = Medium, Y = High, X = Low, Back = Shuffleboard
+    //A = Adaptive, B = Medium, Y = High, X = Low, Start = Shuffleboard
     if (xboxController.getAButton() == true && InShot == false) {
 
     turret.runTurretWithVelocity(adaptiveTopVelocity, adaptiveBottomVelocity);
 
     targetTopVelocity = adaptiveTopVelocity;
     targetBottomVelocity = adaptiveBottomVelocity;
- 
+
     } else if (xboxController.getBButton() == true && InShot == false) {
 
     turret.runTurretWithVelocity(Constants.mediumVelocityTop, Constants.mediumVelocityBottom);
@@ -113,8 +113,8 @@ public class TurretAndShoot extends CommandBase {
 
     targetTopVelocity = Constants.lowVelocityTop;
     targetBottomVelocity = Constants.lowVelocityBottom;
- 
-    } else if (xboxController.getBackButton() == true && InShot == false) {
+
+    } else if (xboxController.getStartButton() == true && InShot == false) {
 
     turret.runTurretWithVelocity(turret.getShuffleTopMotor(), turret.getShuffleBottomMotor());
 
@@ -166,7 +166,7 @@ public class TurretAndShoot extends CommandBase {
 
     pneumaticTime.reset();
     timeoutTime.reset();
- 
+
     System.out.println("Reseting " + pneumaticTime.get());
   
     } else if (InShot == true) {
@@ -175,7 +175,9 @@ public class TurretAndShoot extends CommandBase {
 
     pneumaticTime.stop();
     timeoutTime.stop();
- 
+   
+    InShot = false;
+
     System.out.println("Done " + pneumaticTime.get());
 
     }
@@ -187,11 +189,11 @@ public class TurretAndShoot extends CommandBase {
 
     } else if (limelight.HorizontalOffset() > .2 && limelight.HasValidTarget() == true) {
 
-      turret.turnTurret(limelight.HorizontalOffset() / 20);
+      turret.turnTurret(limelight.HorizontalOffset() / 30);
 
     } else if (limelight.HorizontalOffset() < -.2 && limelight.HasValidTarget() == true) {
 
-      turret.turnTurret(limelight.HorizontalOffset() / 20);
+      turret.turnTurret(limelight.HorizontalOffset() / 30);
 
     } else {
 
