@@ -18,13 +18,9 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 import java.lang.Math;
 
-public class DriveWithXbox extends CommandBase {
+public class AutoDriveByMeters extends CommandBase {
 
   private final Drivetrain drivetrain;
-  private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(0.8);
-  private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(0.8);
-  private SlewRateLimiter slewRateLimiterZ = new SlewRateLimiter(0.8);
-  
   private XboxController xbox;
 
   public boolean isTesting;
@@ -33,14 +29,21 @@ public class DriveWithXbox extends CommandBase {
   private double strafe;
   private double rotation;
 
+  private double targetDistance;
+
+  private boolean isFinished = false;
+
   public static String driveWithXboxDashboard;
  
-  public DriveWithXbox(Drivetrain dt, XboxController xboxController, boolean testing) {
+  public AutoDriveByMeters(Drivetrain dt, double forwardSpeed, double strafeSpeed, double rotationSpeed, double targetDistanceMeters) {
     
     drivetrain = dt;
-    xbox = xboxController;
 
-    isTesting = testing;
+    forward = forwardSpeed;
+    strafe = strafeSpeed;
+    rotation = rotationSpeed;
+
+    targetDistance = targetDistanceMeters;
 
     addRequirements(drivetrain);
 
@@ -51,75 +54,6 @@ public class DriveWithXbox extends CommandBase {
 
   @Override
   public void execute() {
-    /*
-    Holy cow this is going to be A LOT of code eventually...
-    (Actually, it's pretty compact/efficient currently. I thought this was going to need a lot more code... - Simon 8/3/21)
-    (You were a fool, past Simon. This is going to be a lot of code, and even more math - Simon 10/11/21)
-    (This is getting out of hand *Screams in PID* - Simon 11/12/21)
-
-    IF YOU DO WANT TO EDIT THIS COMMAND, BE SURE TO READ THE SWERVE PDFs
-    (can be found on chief delphi, search for "4 wheel independent drive independent steering swerve", should be 1st 2 PDFs)
-
-    Steps of what we need to do:
-    1. Convert joystick X/Y values to degrees **Added compicated yet necessary math**   
-    2. Modify that value by NavX position to do field orientation
-    3. Feed final value to a rotateModules() function
-    4. Get speed value from joystick
-    5. Feed that to a driveMotors() function 
-    6. Add in a rotateEntireRobot() function using the other joystick and hope it doesnt break anything 
-    7. Debug the heck out of this command **Currently on this step - Simon**
-    */
-
-    //Define robot target vector variables (X,Y,Z respectively)  
-    //double forward = -slewRateLimiterX.calculate(RobotContainer.xbox.getLeftY());
-    //double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
-    //double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
-
-    
-
-    if (isTesting = true && xbox.getAButton() == true) {
-
-      forward = -1;
-      strafe = 0;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getBButton() == true) {
-     
-      forward = 0;
-      strafe = 1;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getXButton() == true) {
-
-      forward = 0;
-      strafe = -1;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getYButton() == true) {
-
-      forward = 1;
-      strafe = 0;
-      rotation = 0;
-
-    } else if (isTesting = true) {
-
-      forward =0;
-      strafe = 0;
-      rotation = 0;
-  
-    } else {
-
-      forward = -xbox.getLeftY();
-      strafe = -xbox.getLeftX();
-      rotation = -xbox.getRightX();
-
-    }
-
-    
-
-    //forward = xbox.getLeftY();
-    //strafe = xbox.getLeftX();
-    //rotation = xbox.getRightX();
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
@@ -208,6 +142,9 @@ public class DriveWithXbox extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    
+    
+    
+    return isFinished;
   }
 }

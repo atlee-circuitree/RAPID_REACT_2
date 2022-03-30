@@ -36,15 +36,15 @@ public final class Constants {
     public static final int rearLeftRotEncoderPort = 10;
     public static final int rearRightRotEncoderPort = 12;
     
-    //public static final double frontLeftEncoderOffset = 153.1;
-    //public static final double frontRightEncoderOffset = 290.0;
-    //public static final double rearLeftEncoderOffset = 272.92;
-    //public static final double rearRightEncoderOffset = 255.2;
+    public static final double frontLeftEncoderOffset = 249.61;
+    public static final double frontRightEncoderOffset = 222.45;
+    public static final double rearLeftEncoderOffset = 94.31;
+    public static final double rearRightEncoderOffset = 121.38;
 
-    public static final double frontLeftEncoderOffset = 254.71;
-    public static final double frontRightEncoderOffset = 213.75;
-    public static final double rearLeftEncoderOffset = 95.63;
-    public static final double rearRightEncoderOffset = 123.05;
+    //public static final double frontLeftEncoderOffset = 0;
+    //public static final double frontRightEncoderOffset = 0;
+    //public static final double rearLeftEncoderOffset = 0;
+    //public static final double rearRightEncoderOffset = 0;
 
     public static final int feederMotorPort = 17;
     
@@ -74,11 +74,16 @@ public final class Constants {
 
     public static final int xboxControllerPort = 0;
 
+    //Drive PIDs
     public static final double rotPID_P = 1;
     public static final double rotPID_I = 0.00;
     public static final double rotPID_D = 0.00;
     public static final double rotPIDMinValue = 0.07;
 
+    //Auto PIDs
+    public static final double kPXAutoController = 0.067365;
+    public static final double kPYAutoController = 0.067365;
+    public static final double kPAutoThetaController = 1;
 
     //Pneumatics
     

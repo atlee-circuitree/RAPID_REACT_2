@@ -173,8 +173,12 @@ public class TurretAndShoot extends CommandBase {
 
     pneumatic.shooterDown();
 
+    pneumaticTime.reset();
+    timeoutTime.reset();
     pneumaticTime.stop();
     timeoutTime.stop();
+
+    InShot = false;
  
     System.out.println("Done " + pneumaticTime.get());
 

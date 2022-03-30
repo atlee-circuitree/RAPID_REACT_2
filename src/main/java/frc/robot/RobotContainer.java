@@ -89,7 +89,7 @@ public class RobotContainer {
     turret = new TurretSubsystem();
 
     //Teleop commands
-    driveWithXbox = new DriveWithXbox(drivetrain, xbox, false);
+    driveWithXbox = new DriveWithXbox(drivetrain, xbox, true);
     driveWithXbox.addRequirements(drivetrain);
 
     smartDashboardCommand = new SmartDashboardCommand();
@@ -192,7 +192,7 @@ public class RobotContainer {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
-                3.0, 3.0)
+                0.5, 0.5)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(Constants.driveKinematics);
 
@@ -209,7 +209,7 @@ public class RobotContainer {
 
     var thetaController =
         new ProfiledPIDController(
-            1.0, 0, 0, Constants.thetaControllerConstraints);
+            Constants.kPAutoThetaController, 0, 0, Constants.thetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand =
@@ -219,8 +219,8 @@ public class RobotContainer {
             Constants.driveKinematics,
 
             // Position controllers
-            new PIDController(1.0, 0, 0),
-            new PIDController(1.0, 0, 0),
+            new PIDController(Constants.kPXAutoController, 0, 0),
+            new PIDController(Constants.kPYAutoController, 0, 0),
             thetaController,
             drivetrain::setSwerveModuleStates,
             drivetrain);

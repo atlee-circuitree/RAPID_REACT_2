@@ -21,6 +21,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.kauailabs.navx.frc.AHRS;
 
 
@@ -90,6 +91,12 @@ public class Drivetrain extends SubsystemBase {
     rearLeftRotEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rearRightRotEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
+    frontLeftRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    frontRightRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    rearLeftRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    rearRightRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    
+
     //We are using getAboslutePosition(), but just in case
     frontLeftRotEncoder.setPosition(0);
     frontRightRotEncoder.setPosition(0);
@@ -158,6 +165,7 @@ public class Drivetrain extends SubsystemBase {
     drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees() + ";";
 
     drivetrainDashboard = drivetrainDashboard + "FL Velocity/" + positionChangePer100msToMetersPerSecond(frontLeftDrvMotor.getSelectedSensorVelocity()) + ";";
+    drivetrainDashboard = drivetrainDashboard + "FL Encoder/" + frontLeftDrvMotor.getSelectedSensorPosition() + ";";
 
   }
 
@@ -363,6 +371,25 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public double getDriveEncoder(SwerveModule module){
+    
+    if(module == SwerveModule.FRONT_LEFT){
+      return frontLeftDrvMotor.getSelectedSensorPosition();
+    }
+    else if(module == SwerveModule.FRONT_RIGHT){
+      return frontRightDrvMotor.getSelectedSensorPosition();
+    }
+    else if(module == SwerveModule.REAR_LEFT){
+      return rearLeftDrvMotor.getSelectedSensorPosition();
+    }
+    else if(module == SwerveModule.REAR_RIGHT){
+      return rearRightDrvMotor.getSelectedSensorPosition();
+    }
+    else{
+      return 0;
+    }
+  }
+
 
   public double getRotPIDOutput(SwerveModule module){
     if(module == SwerveModule.FRONT_LEFT){
@@ -459,12 +486,12 @@ public class Drivetrain extends SubsystemBase {
     
     //posChangePer100ms/10 = posChangePerSecond
 
-    //posChangePerSecond/46.4213 = degreesPerSecond
+    //posChangePerSecond/46.4213 = degreesPerSecond (46.4213 being the encoder counts per degree)
     //(degreesPerSecond * PI/180) = radiansPerSecond
-    //radiansPerSecond*0.1016 = metersPerSecond
+    //radiansPerSecond*0.0508 = metersPerSecond (0.0508 being the radius of the wheel in meters)
 
     double degreesPerSecond = (posChangePer100ms*10)/46.4213;
-    double metersPerSecond = (degreesPerSecond*(Math.PI/180))*0.1016;
+    double metersPerSecond = (degreesPerSecond*(Math.PI/180))*0.0508;
 
     return metersPerSecond;
   }
@@ -496,10 +523,15 @@ public void resetOdometry(Pose2d pose) {
 }
 
 public void setSwerveModuleStates(SwerveModuleState[] targetState){
-  rotateModule(SwerveModule.FRONT_LEFT, targetState[0].angle.getDegrees(), targetState[0].speedMetersPerSecond);
-  rotateModule(SwerveModule.FRONT_RIGHT, targetState[1].angle.getDegrees(), targetState[1].speedMetersPerSecond);
-  rotateModule(SwerveModule.REAR_LEFT, targetState[2].angle.getDegrees(), targetState[2].speedMetersPerSecond);
-  rotateModule(SwerveModule.REAR_RIGHT, targetState[3].angle.getDegrees(), targetState[3].speedMetersPerSecond);
+  rotateModule(SwerveModule.FRONT_LEFT, targetState[0].angle.getDegrees(), 1);
+  rotateModule(SwerveModule.FRONT_RIGHT, targetState[1].angle.getDegrees(), 1);
+  rotateModule(SwerveModule.REAR_LEFT, targetState[2].angle.getDegrees(), 1);
+  rotateModule(SwerveModule.REAR_RIGHT, targetState[3].angle.getDegrees(), 1);
+
+  rotateMotor(Motors.FRONT_LEFT_DRV, targetState[0].speedMetersPerSecond/4.14528);
+  rotateMotor(Motors.FRONT_RIGHT_DRV, targetState[1].speedMetersPerSecond/4.14528);
+  rotateMotor(Motors.REAR_LEFT_DRV, targetState[2].speedMetersPerSecond/4.14528);
+  rotateMotor(Motors.REAR_RIGHT_DRV, targetState[3].speedMetersPerSecond/4.14528);
 }
 
 
