@@ -89,7 +89,7 @@ public class RobotContainer {
     turret = new TurretSubsystem();
 
     //Teleop commands
-    driveWithXbox = new DriveWithXbox(drivetrain);
+    driveWithXbox = new DriveWithXbox(drivetrain, xbox, false);
     driveWithXbox.addRequirements(drivetrain);
 
     smartDashboardCommand = new SmartDashboardCommand();

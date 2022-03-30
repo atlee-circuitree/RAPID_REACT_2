@@ -223,47 +223,6 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-  public void rotateModuleNonLinear(SwerveModule module, double targetDegrees, double speed){
-
-    if(module == SwerveModule.FRONT_LEFT){
-      frontLeftPID.setSetpoint(targetDegrees);
-      if(frontLeftPID.atSetpoint()){
-        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_LEFT), -speed, speed));
-      }
-    }
-    else if(module == SwerveModule.FRONT_RIGHT){
-      frontRightPID.setSetpoint(targetDegrees);
-      if(frontRightPID.atSetpoint()){
-        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_RIGHT), -speed, speed));
-      }
-    }
-    else if(module == SwerveModule.REAR_LEFT){
-      rearLeftPID.setSetpoint(targetDegrees);
-      if(rearLeftPID.atSetpoint()){
-        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_LEFT), -speed, speed));
-      }
-    }
-    else if(module == SwerveModule.REAR_RIGHT){
-      rearRightPID.setSetpoint(targetDegrees);
-      if(rearRightPID.atSetpoint()){
-        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-      }
-      else{
-        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_RIGHT), -speed, speed));
-      }
-    }
-
-  }
-
 
   public void rotateModule(SwerveModule module, double targetDegrees, double speedMod){
     
@@ -409,6 +368,7 @@ public class Drivetrain extends SubsystemBase {
     if(module == SwerveModule.FRONT_LEFT){
       double measurement = MathUtil.clamp(frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT)), -180, 180);
       
+      //Deadband
       if(measurement/180 < Constants.rotPIDMinValue && measurement/180 > 0){
         measurement = Constants.rotPIDMinValue*180;
       }
@@ -498,12 +458,13 @@ public class Drivetrain extends SubsystemBase {
   public double positionChangePer100msToMetersPerSecond(double posChangePer100ms){
     
     //posChangePer100ms/10 = posChangePerSecond
-    //posChangePerSecond/44.9 = degreesPerSecond
-    //Math.toRadians(degreesPerSecond) = radiansPerSecond
+
+    //posChangePerSecond/46.4213 = degreesPerSecond
+    //(degreesPerSecond * PI/180) = radiansPerSecond
     //radiansPerSecond*0.1016 = metersPerSecond
 
-    double degreesPerSecond = (posChangePer100ms*10)/44.9;
-    double metersPerSecond = Math.toRadians(degreesPerSecond)*0.1016;
+    double degreesPerSecond = (posChangePer100ms*10)/46.4213;
+    double metersPerSecond = (degreesPerSecond*(Math.PI/180))*0.1016;
 
     return metersPerSecond;
   }
@@ -535,10 +496,10 @@ public void resetOdometry(Pose2d pose) {
 }
 
 public void setSwerveModuleStates(SwerveModuleState[] targetState){
-  rotateModuleNonLinear(SwerveModule.FRONT_LEFT, targetState[0].angle.getDegrees(), targetState[0].speedMetersPerSecond);
-  rotateModuleNonLinear(SwerveModule.FRONT_RIGHT, targetState[1].angle.getDegrees(), targetState[1].speedMetersPerSecond);
-  rotateModuleNonLinear(SwerveModule.REAR_LEFT, targetState[2].angle.getDegrees(), targetState[2].speedMetersPerSecond);
-  rotateModuleNonLinear(SwerveModule.REAR_RIGHT, targetState[3].angle.getDegrees(), targetState[3].speedMetersPerSecond);
+  rotateModule(SwerveModule.FRONT_LEFT, targetState[0].angle.getDegrees(), targetState[0].speedMetersPerSecond);
+  rotateModule(SwerveModule.FRONT_RIGHT, targetState[1].angle.getDegrees(), targetState[1].speedMetersPerSecond);
+  rotateModule(SwerveModule.REAR_LEFT, targetState[2].angle.getDegrees(), targetState[2].speedMetersPerSecond);
+  rotateModule(SwerveModule.REAR_RIGHT, targetState[3].angle.getDegrees(), targetState[3].speedMetersPerSecond);
 }
 
 

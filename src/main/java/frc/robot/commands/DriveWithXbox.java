@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -21,13 +22,24 @@ public class DriveWithXbox extends CommandBase {
   private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(0.8);
   private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(0.8);
   private SlewRateLimiter slewRateLimiterZ = new SlewRateLimiter(0.8);
+  
+  private XboxController xbox;
+
+  public boolean isTesting;
+
+  private double forward;
+  private double strafe;
+  private double rotation;
 
   public static String driveWithXboxDashboard;
-  
-  public DriveWithXbox(Drivetrain dt) {
+ 
+  public DriveWithXbox(Drivetrain dt, XboxController xboxController, boolean testing) {
     
     drivetrain = dt;
-    
+    xbox = xboxController;
+
+    isTesting = testing;
+
     addRequirements(drivetrain);
 
   }
@@ -57,9 +69,64 @@ public class DriveWithXbox extends CommandBase {
     */
 
     //Define robot target vector variables (X,Y,Z respectively)  
-    double forward = -slewRateLimiterX.calculate(RobotContainer.xbox.getLeftY());
-    double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
-    double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
+    //double forward = -slewRateLimiterX.calculate(RobotContainer.xbox.getLeftY());
+    //double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
+    //double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
+
+
+/*
+    if (isTesting = true && xbox.getAButton() == true) {
+
+      forward = -1;
+      strafe = 1;
+      rotation = 1;
+
+      System.out.println("Running down");
+
+    } else if (isTesting = true && xbox.getBButton() == true) {
+     
+      forward = 1;
+      strafe = 0;
+      rotation = -1;
+
+      System.out.println("Running right");
+
+    } else if (isTesting = true && xbox.getXButton() == true) {
+
+      forward = -1;
+      strafe = 0;
+      rotation = 0;
+
+      System.out.println("Running left");
+
+    } else if (isTesting = true && xbox.getYButton() == true) {
+
+      forward = 1;
+      strafe = 0;
+      rotation = 0;
+
+      System.out.println("Running up");
+
+    } else if (isTesting = true) {
+
+      forward = 0;
+      strafe = 0;
+      rotation = 0;
+
+      System.out.println("Not running");
+
+    } else {
+
+      forward = -xbox.getLeftY();
+      strafe = -xbox.getLeftX();
+      rotation = -xbox.getRightX();
+
+    }
+*/
+
+    forward = -xbox.getLeftY();
+    strafe = -xbox.getLeftX();
+    rotation = -xbox.getRightX();
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
@@ -128,12 +195,6 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed);
     }
 
-    //When going full positive turning
-    //FL should be 45
-    //FR should be 135
-    //RL should be -45
-    //RR should be -135
-
     //Show important values on dashboard
     //driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, C)*(180/Math.PI)) + ";";
     //driveWithXboxDashboard = driveWithXboxDashboard + "FR Module/" + "Speed: " + String.valueOf(frontRightSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";
@@ -145,7 +206,6 @@ public class DriveWithXbox extends CommandBase {
     //DEBUG
     if(RobotContainer.xbox.getRightStickButton()){
       drivetrain.zeroNavXYaw();
-      drivetrain.resetOdometry(new Pose2d());
     }
   }  
 
