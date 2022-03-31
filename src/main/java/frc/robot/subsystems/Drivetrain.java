@@ -91,6 +91,11 @@ public class Drivetrain extends SubsystemBase {
     rearLeftRotEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rearRightRotEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
+    frontLeftRotEncoder.configMagnetOffset(0);
+    frontRightRotEncoder.configMagnetOffset(0);
+    rearLeftRotEncoder.configMagnetOffset(0);
+    rearRightRotEncoder.configMagnetOffset(0);
+
     frontLeftRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     frontRightRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     rearLeftRotEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
@@ -164,8 +169,7 @@ public class Drivetrain extends SubsystemBase {
     drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
     drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees() + ";";
 
-    drivetrainDashboard = drivetrainDashboard + "FL Velocity/" + positionChangePer100msToMetersPerSecond(frontLeftDrvMotor.getSelectedSensorVelocity()) + ";";
-    drivetrainDashboard = drivetrainDashboard + "FL Encoder/" + frontLeftDrvMotor.getSelectedSensorPosition() + ";";
+    drivetrainDashboard = drivetrainDashboard + "Encoder Last Error/" + frontRightRotEncoder.getLastError() + ";";
 
   }
 

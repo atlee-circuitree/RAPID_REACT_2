@@ -75,7 +75,7 @@ public class DriveWithXbox extends CommandBase {
     //double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
     //double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
 
-    
+    /*
 
     if (isTesting = true && xbox.getAButton() == true) {
 
@@ -115,11 +115,11 @@ public class DriveWithXbox extends CommandBase {
 
     }
 
-    
+    */
 
-    //forward = xbox.getLeftY();
-    //strafe = xbox.getLeftX();
-    //rotation = xbox.getRightX();
+    forward = -xbox.getLeftY() / 2;
+    strafe = -xbox.getLeftX() / 2;
+    rotation = xbox.getRightX() / 2;
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
