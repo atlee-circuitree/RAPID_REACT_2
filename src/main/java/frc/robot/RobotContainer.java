@@ -18,9 +18,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import frc.robot.commands.ControlClimbPistons;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.RunFeeder;
+import frc.robot.commands.RunHook;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TurretAndShoot;
 import frc.robot.subsystems.Drivetrain;
@@ -69,6 +71,16 @@ public class RobotContainer {
   public Command feederCommand(double speed) {
     Command feedCommand = new RunFeeder(speed, feeder, pneumatics);
     return feedCommand;
+  }
+
+  public Command hookCommand(double speed) {
+    Command hookCommand = new RunHook(speed, pneumatics);
+    return hookCommand;
+  }
+
+  public Command climbCommand(boolean up) {
+    Command hookCommand = new ControlClimbPistons(up, pneumatics);
+    return hookCommand;
   }
 
   public Command WaitCommand(double timeout) {
@@ -122,6 +134,9 @@ public class RobotContainer {
     JoystickButton DriverA = new JoystickButton(xbox, XboxController.Button.kA.value);
     JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
     
+    JoystickButton DriverLB = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
+    JoystickButton DriverRB = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
+
     BooleanSupplier isDriverLTPressed = new BooleanSupplier() {
       
       @Override
@@ -155,6 +170,9 @@ public class RobotContainer {
     DriverLT.whileActiveContinuous(feederCommand(-.72));
     DriverRT.whileActiveContinuous(feederCommand(.72));
 
+    DriverLB.whileHeld(hookCommand(-.8));
+    DriverRB.whileHeld(hookCommand(.8));
+
     //P2 BUTTONS
     JoystickButton Driver2A = new JoystickButton(xbox2, XboxController.Button.kA.value);
     JoystickButton Driver2B = new JoystickButton(xbox2, XboxController.Button.kB.value);
@@ -170,8 +188,8 @@ public class RobotContainer {
     //Driver2Y.whenPressed(SimpleShootCommand(9200));
     //Driver2X.whenPressed(SimpleShootCommand(4000));
 
-    //Driver2LB.whileHeld(HookCommand(.5));
-    //Driver2RB.whileHeld(HookCommand(-.5));
+    Driver2LB.whileHeld(hookCommand(.8));
+    Driver2RB.whileHeld(hookCommand(-.8));
 
 
     //FIGHTSTICK BUTTONS
@@ -180,7 +198,9 @@ public class RobotContainer {
     JoystickButton FightstickL3 = new JoystickButton(fightstick, 9);
     JoystickButton FightstickR3 = new JoystickButton(fightstick, 10);
     
-    
+    FightstickL3.whenHeld(climbCommand(true));
+    FightstickR3.whenHeld(climbCommand(false));
+
   }
 
   /**

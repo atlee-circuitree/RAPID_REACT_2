@@ -12,16 +12,16 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class RunHook extends CommandBase {
+public class ControlClimbPistons extends CommandBase {
    
   private final Pneumatics pnuematic;
-  private double targetSpeed; 
+  private boolean up; 
 
-  public RunHook(double speed, Pneumatics ps) {
+  public ControlClimbPistons(boolean isThisGoingUp, Pneumatics ps) {
  
     pnuematic = ps;
+    up = isThisGoingUp;
     addRequirements(pnuematic);
-    speed = targetSpeed;
 
   }
  
@@ -33,16 +33,21 @@ public class RunHook extends CommandBase {
   @Override
   public void execute() {
 
-    pnuematic.runHookMotor(targetSpeed);
+    if (up == true) {
 
-    System.out.println("Running hook");
+    pnuematic.climbPistonsUp();
+
+    } else {
+
+    pnuematic.climbPistonsDown();
+
+    }
  
   }
 
   @Override
   public void end(boolean interrupted) {
 
-    pnuematic.runHookMotor(0);
      
   }
 
