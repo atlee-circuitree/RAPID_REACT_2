@@ -207,6 +207,21 @@ public class Drivetrain extends SubsystemBase {
   
   }
 
+  public void killAllModulesNonLinear(){
+    
+    frontLeftDrvMotor.set(TalonFXControlMode.PercentOutput, 0);
+    frontRightDrvMotor.set(TalonFXControlMode.PercentOutput, 0);
+    rearLeftDrvMotor.set(TalonFXControlMode.PercentOutput, 0);
+    rearRightDrvMotor.set(TalonFXControlMode.PercentOutput, 0);
+
+    frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+    frontRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+    rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+    rearRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
+  
+  }
+
+
   //Add other motors as needed, just make sure to put them in the enum too
   public void rotateMotor(Motors motor, double speed){
     if(motor == Motors.FRONT_LEFT_ROT){

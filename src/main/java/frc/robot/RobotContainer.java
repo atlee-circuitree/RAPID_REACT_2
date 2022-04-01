@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
+import javax.crypto.SealedObject;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,11 +22,15 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.commands.ControlClimbPistons;
 import frc.robot.commands.DriveWithXbox;
+import frc.robot.commands.KickoutFeeder;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.RunFeeder;
+import frc.robot.commands.RunFeederAuto;
 import frc.robot.commands.RunHook;
+import frc.robot.commands.ShooterInAuto;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TurretAndShoot;
+import frc.robot.commands.TurretRotateAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -86,6 +92,21 @@ public class RobotContainer {
   public Command WaitCommand(double timeout) {
     Command m_waitCommand = new WaitCommand(timeout);
     return m_waitCommand;
+  }
+
+  public Command adaptiveAutoShootCommand() {
+    //Limelight stuff
+    double distance = limelight.getDistanceToTarget();
+ 
+    int roundedDistance = (int) Math.round(distance * 10);
+    
+    LaunchVelocity[] launchVelocityArray = turret.getDistanceToVelocityArray();
+
+    double velocity = launchVelocityArray[roundedDistance].topMotorVelocity;
+
+    double bottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
+    Command m_shootCommand = new ShooterInAuto(velocity, bottomVelocity, turret, pneumatics, limelight, feeder);
+    return m_shootCommand;
   }
 
   /**
@@ -188,10 +209,6 @@ public class RobotContainer {
     //Driver2Y.whenPressed(SimpleShootCommand(9200));
     //Driver2X.whenPressed(SimpleShootCommand(4000));
 
-    Driver2LB.whileHeld(hookCommand(.8));
-    Driver2RB.whileHeld(hookCommand(-.8));
-
-
     //FIGHTSTICK BUTTONS
     JoystickButton FightstickB = new JoystickButton(fightstick, 2);
     JoystickButton FightstickY = new JoystickButton(fightstick, 4);
@@ -212,7 +229,7 @@ public class RobotContainer {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
-                0.5, 0.5)
+                2, 1)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(Constants.driveKinematics);
 
@@ -246,9 +263,23 @@ public class RobotContainer {
             drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
+    drivetrain.zeroNavXYaw();
     drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
+
+    SequentialCommandGroup autoTest = new SequentialCommandGroup(
+    new KickoutFeeder(false, pneumatics),
+    new RunFeederAuto(.8, feeder, pneumatics),
+    swerveControllerCommand.andThen(() -> drivetrain.killAllModulesNonLinear()),
+    new RunFeederAuto(0, feeder, pneumatics),
+    new TurretRotateAuto(turret, limelight, 2),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand()
+    );
+
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> drivetrain.driveAllModulesNonLinear(0));
+    //return swerveControllerCommand.andThen(() -> drivetrain.driveAllModulesNonLinear(0));
+
+    return autoTest;
   }
 }

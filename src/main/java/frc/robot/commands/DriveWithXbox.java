@@ -121,6 +121,17 @@ public class DriveWithXbox extends CommandBase {
     strafe = -xbox.getLeftX() / 2;
     rotation = xbox.getRightX() / 2;
 
+    //Controller Deadband
+    if(Math.abs(forward) < 0.05){
+      forward = 0;
+    }
+    if(Math.abs(strafe) < 0.05){
+      strafe = 0;
+    }
+    if(Math.abs(rotation) < 0.05){
+      rotation = 0;
+    }
+
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
     strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
@@ -158,7 +169,7 @@ public class DriveWithXbox extends CommandBase {
     }
 
     //Make SURE the robot stops when the joysticks are 0
-    if((RobotContainer.xbox.getLeftX() == 0 && RobotContainer.xbox.getLeftY() == 0 && RobotContainer.xbox.getRightX() == 0 && isTesting == false)){
+    if((forward == 0 && strafe == 0 && rotation == 0 && isTesting == false)){
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);

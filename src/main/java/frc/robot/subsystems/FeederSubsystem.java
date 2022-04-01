@@ -18,12 +18,6 @@ public class FeederSubsystem extends SubsystemBase {
 
   CANSparkMax feederMotor = null;
 
-  public final ColorSensorV3 colorSensor = new ColorSensorV3(Constants.i2cPort);
-
-  public final static ColorMatch m_colorMatcher = new ColorMatch();
-
-  public static Color Red = new Color(0.561, 0.232, 0.114);
-   
   public FeederSubsystem() {
 
     feederMotor = new CANSparkMax(Constants.feederMotorPort, MotorType.kBrushless);
@@ -34,18 +28,6 @@ public class FeederSubsystem extends SubsystemBase {
   public void runFeeder(double speed) {
 
     feederMotor.set(speed);
-
-  }
-
-  public static double isRed() {
-    
-    m_colorMatcher.addColorMatch(Red);
-
-    if (m_colorMatcher.matchColor(Red) != null) {
-    return 1;
-    } else {
-    return 0;
-    }
 
   }
  

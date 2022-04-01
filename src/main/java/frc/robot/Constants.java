@@ -63,9 +63,7 @@ public final class Constants {
     public static final int turretMotorPort = 19;
 
     public static final int hookMotorPort = 18;
-
-    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
-
+ 
     public static final double trackwidth = 22.5;
     public static final double wheelbase = 22.5;
 
@@ -83,7 +81,10 @@ public final class Constants {
     //Auto PIDs
     public static final double kPXAutoController = 0.067365;
     public static final double kPYAutoController = 0.067365;
-    public static final double kPAutoThetaController = 1;
+    //public static final double kPXAutoController = 0.15;
+    //public static final double kPYAutoController = 0.15;
+    public static final double kPAutoThetaController = .5;
+    //Was 1
 
     //Pneumatics
     
