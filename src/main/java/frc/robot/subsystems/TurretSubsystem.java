@@ -120,7 +120,7 @@ public class TurretSubsystem extends SubsystemBase {
     robotDistance[42] = new LaunchVelocity(11600, 7600);
     robotDistance[43] = new LaunchVelocity(12900, 6700);
     robotDistance[44] = new LaunchVelocity(13200, 6700);
-    robotDistance[45] = new LaunchVelocity(0, 0);
+    robotDistance[45] = new LaunchVelocity(13200, 6700);
     robotDistance[46] = new LaunchVelocity(0, 0);
     robotDistance[47] = new LaunchVelocity(0, 0);
     robotDistance[48] = new LaunchVelocity(0, 0);
@@ -149,6 +149,12 @@ public class TurretSubsystem extends SubsystemBase {
   public double getTurretEncoder() {
 
     return turretEncoder.getPosition();
+
+  }
+
+  public void resetEncoder() {
+
+  turretEncoder.setPosition(0);
 
   }
 

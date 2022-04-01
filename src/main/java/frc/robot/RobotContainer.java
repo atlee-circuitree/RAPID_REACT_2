@@ -20,10 +20,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import frc.robot.commands.AutoDriveByMeters;
 import frc.robot.commands.ControlClimbPistons;
 import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.KickoutFeeder;
 import frc.robot.commands.RecalibrateModules;
+import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunFeeder;
 import frc.robot.commands.RunFeederAuto;
 import frc.robot.commands.RunHook;
@@ -108,6 +110,10 @@ public class RobotContainer {
     Command m_shootCommand = new ShooterInAuto(velocity, bottomVelocity, turret, pneumatics, limelight, feeder);
     return m_shootCommand;
   }
+  public Command AutoDriveCommand(double forward, double strafe, double rotation, double distanceMeters){
+    Command m_AutoDriveByMeters = new AutoDriveByMeters(drivetrain, forward, strafe, rotation, distanceMeters);
+    return m_AutoDriveByMeters;
+  } 
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -210,11 +216,15 @@ public class RobotContainer {
     //Driver2X.whenPressed(SimpleShootCommand(4000));
 
     //FIGHTSTICK BUTTONS
+    JoystickButton FightstickShare = new JoystickButton(fightstick, 7);
+    JoystickButton FightstickOption = new JoystickButton(fightstick, 8);
     JoystickButton FightstickB = new JoystickButton(fightstick, 2);
     JoystickButton FightstickY = new JoystickButton(fightstick, 4);
     JoystickButton FightstickL3 = new JoystickButton(fightstick, 9);
     JoystickButton FightstickR3 = new JoystickButton(fightstick, 10);
-    
+   
+    FightstickShare.whenPressed(new KickoutFeeder(false, pneumatics, .1));
+    FightstickOption.whenPressed(new KickoutFeeder(true, pneumatics, .1));
     FightstickL3.whenHeld(climbCommand(true));
     FightstickR3.whenHeld(climbCommand(false));
 
@@ -268,10 +278,10 @@ public class RobotContainer {
 
 
     SequentialCommandGroup autoTest = new SequentialCommandGroup(
-    new KickoutFeeder(false, pneumatics),
-    new RunFeederAuto(.8, feeder, pneumatics),
+    new ResetGyro(drivetrain),
+    new KickoutFeeder(false, pneumatics, 1),
+    new RunFeederAuto(.8, feeder, pneumatics, .1),
     swerveControllerCommand.andThen(() -> drivetrain.killAllModulesNonLinear()),
-    new RunFeederAuto(0, feeder, pneumatics),
     new TurretRotateAuto(turret, limelight, 2),
     adaptiveAutoShootCommand(),
     adaptiveAutoShootCommand()
@@ -281,5 +291,6 @@ public class RobotContainer {
     //return swerveControllerCommand.andThen(() -> drivetrain.driveAllModulesNonLinear(0));
 
     return autoTest;
+    //return AutoDriveCommand(0.5, 0.5, 0, 5);
   }
 }

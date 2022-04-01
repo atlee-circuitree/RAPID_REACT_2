@@ -23,17 +23,18 @@ public class AutoDriveByMeters extends CommandBase {
   private final Drivetrain drivetrain;
   private XboxController xbox;
 
-  public boolean isTesting;
-
   private double forward;
   private double strafe;
   private double rotation;
 
   private double targetDistance;
 
-  private boolean isFinished = false;
+  private double frontLeftEncoderMeters;
+  private double frontRightEncoderMeters;
+  private double rearLeftEncoderMeters;
+  private double rearRightEncoderMeters;
 
-  public static String driveWithXboxDashboard;
+  private boolean isFinished = false;
  
   public AutoDriveByMeters(Drivetrain dt, double forwardSpeed, double strafeSpeed, double rotationSpeed, double targetDistanceMeters) {
     
@@ -50,10 +51,22 @@ public class AutoDriveByMeters extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    drivetrain.resetDriveEncoders();
+  }
 
   @Override
   public void execute() {
+
+
+    //2048 = encoder ticks per shaft rotation
+    //8.16 = shaft rotations per wheel rotation
+    //3.1328 = wheel rotations per meter
+    frontLeftEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.FRONT_LEFT)/2048/8.16/3.1328;
+    frontRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.FRONT_RIGHT)/2048/8.16/3.1328;
+    rearLeftEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_LEFT)/2048/8.16/3.1328;
+    rearRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_RIGHT)/2048/8.16/3.1328;
+
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
     double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
@@ -92,7 +105,7 @@ public class AutoDriveByMeters extends CommandBase {
     }
 
     //Make SURE the robot stops when the joysticks are 0
-    if((RobotContainer.xbox.getLeftX() == 0 && RobotContainer.xbox.getLeftY() == 0 && RobotContainer.xbox.getRightX() == 0 && isTesting == false)){
+    if(Math.abs(frontLeftEncoderMeters) >= targetDistance && Math.abs(frontRightEncoderMeters) >= targetDistance && Math.abs(rearLeftEncoderMeters) >= targetDistance && Math.abs(rearRightEncoderMeters) >= targetDistance){
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);
@@ -102,14 +115,10 @@ public class AutoDriveByMeters extends CommandBase {
       drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 0);
       drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 0);
       drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 0);
+
+      isFinished = true;
     }
     else{
-      //Set angles for modules (change speed mod later if needed)
-      //Original angle values
-      //FL: B, D
-      //FR: B, C
-      //RL: A, D
-      //RR: A, C
       drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, C)*(180/Math.PI), 1);
       drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 1);
       drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 1);
@@ -122,19 +131,6 @@ public class AutoDriveByMeters extends CommandBase {
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed);
     }
 
-    //Show important values on dashboard
-    //driveWithXboxDashboard = "FL Module/" + "Speed: " + String.valueOf(frontLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(B, C)*(180/Math.PI)) + ";";
-    //driveWithXboxDashboard = driveWithXboxDashboard + "FR Module/" + "Speed: " + String.valueOf(frontRightSpeed) + " Angle: " + String.valueOf(Math.atan2(B, D)*(180/Math.PI)) + ";";
-    //driveWithXboxDashboard = driveWithXboxDashboard + "RL Module/" + "Speed: " + String.valueOf(rearLeftSpeed) + " Angle: " + String.valueOf(Math.atan2(A, C)*(180/Math.PI)) + ";";
-    //driveWithXboxDashboard = driveWithXboxDashboard + "RR Module/" + "Speed: " + String.valueOf(rearRightSpeed) + " Angle: " + String.valueOf(Math.atan2(A, D)*(180/Math.PI)) + ";";
-    driveWithXboxDashboard = driveWithXboxDashboard + "NavX Yaw/" + String.valueOf(drivetrain.getNavXOutput()) + ";";
-
-
-    //DEBUG
-    if(xbox.getBackButtonPressed()){
-      drivetrain.zeroNavXYaw();
-      drivetrain.resetOdometry(new Pose2d(new Translation2d(0, new Rotation2d(0)), new Rotation2d(0)));
-    }
   }  
 
   @Override
@@ -142,9 +138,6 @@ public class AutoDriveByMeters extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    
-    
-    
     return isFinished;
   }
 }

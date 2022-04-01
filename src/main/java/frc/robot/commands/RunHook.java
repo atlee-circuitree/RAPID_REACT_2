@@ -19,9 +19,11 @@ public class RunHook extends CommandBase {
 
   public RunHook(double speed, Pneumatics ps) {
  
+    targetSpeed = speed;
     pnuematic = ps;
     addRequirements(pnuematic);
-    speed = targetSpeed;
+    //speed = targetSpeed;
+    
 
   }
  
@@ -42,7 +44,7 @@ public class RunHook extends CommandBase {
   @Override
   public void end(boolean interrupted) {
 
-    //pnuematic.runHookMotor(0);
+    pnuematic.runHookMotor(0);
      
   }
 

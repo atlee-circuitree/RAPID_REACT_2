@@ -409,6 +409,13 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public void resetDriveEncoders(){
+    frontLeftDrvMotor.setSelectedSensorPosition(0);
+    frontRightDrvMotor.setSelectedSensorPosition(0);
+    rearLeftDrvMotor.setSelectedSensorPosition(0);
+    rearRightDrvMotor.setSelectedSensorPosition(0);
+  }
+ 
 
   public double getRotPIDOutput(SwerveModule module){
     if(module == SwerveModule.FRONT_LEFT){
@@ -537,8 +544,8 @@ public Pose2d getPose() {
   return odometry.getPoseMeters();
 }
 
-public void resetOdometry(Pose2d pose) {
-  odometry.resetPosition(pose, navx.getRotation2d());
+public void resetOdometry(Pose2d pose2d) {
+  odometry.resetPosition(pose2d, navx.getRotation2d());
 }
 
 public void setSwerveModuleStates(SwerveModuleState[] targetState){

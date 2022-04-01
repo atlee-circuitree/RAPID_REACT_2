@@ -15,7 +15,7 @@ public class TurretRotateAuto extends CommandBase {
   private final TurretSubsystem turret;
   private final LimeLightSubsystem limelight;
   private Timer timeoutTimer = new Timer();
-  double targetTimeout;
+  private double targetTimeout;
    
   public TurretRotateAuto(TurretSubsystem ts, LimeLightSubsystem ls, double timeout) {
 

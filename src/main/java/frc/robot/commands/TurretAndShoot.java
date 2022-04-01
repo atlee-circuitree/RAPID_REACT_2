@@ -203,6 +203,13 @@ public class TurretAndShoot extends CommandBase {
 
     }
 
+    //Reset Turret Encoder
+    if (xboxController.getStartButton() == true) {
+
+      turret.resetEncoder();
+  
+    }
+
   }
 
   @Override

@@ -18,7 +18,7 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 import java.lang.Math;
 
-public class DriveWithXbox extends CommandBase {
+public class DriveWithXboxOptimized extends CommandBase {
 
   private final Drivetrain drivetrain;
   private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(0.8);
@@ -33,9 +33,11 @@ public class DriveWithXbox extends CommandBase {
   private double strafe;
   private double rotation;
 
+  private int invertSpeed = 1;
+
   public static String driveWithXboxDashboard;
  
-  public DriveWithXbox(Drivetrain dt, XboxController xboxController, boolean testing) {
+  public DriveWithXboxOptimized(Drivetrain dt, XboxController xboxController, boolean testing) {
     
     drivetrain = dt;
     xbox = xboxController;
@@ -44,6 +46,18 @@ public class DriveWithXbox extends CommandBase {
 
     addRequirements(drivetrain);
 
+  }
+
+  private double invertAngle(double targetAngle){
+    
+    if(targetAngle > 0){
+      targetAngle = targetAngle - 180;
+    }
+    if(targetAngle <= 0){
+      targetAngle = targetAngle + 180;
+    }
+    
+    return targetAngle;
   }
 
   @Override
@@ -75,55 +89,13 @@ public class DriveWithXbox extends CommandBase {
     //double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
     //double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
 
-    /*
-
-    if (isTesting = true && xbox.getAButton() == true) {
-
-      forward = -1;
-      strafe = 0;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getBButton() == true) {
-     
-      forward = 0;
-      strafe = 1;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getXButton() == true) {
-
-      forward = 0;
-      strafe = -1;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getYButton() == true) {
-
-      forward = 1;
-      strafe = 0;
-      rotation = 0;
-
-    } else if (isTesting = true) {
-
-      forward =0;
-      strafe = 0;
-      rotation = 0;
-  
-    } else {
-
-      forward = -xbox.getLeftY();
-      strafe = -xbox.getLeftX();
-      rotation = -xbox.getRightX();
-
-    }
-
-    */
-
     forward = xbox.getLeftY() * 0.6;
     strafe = xbox.getLeftX() * 0.6;
     rotation = xbox.getRightX() * 0.6;
 
-    //if(rotation != 0 && (forward != 0 || strafe != 0)){
-    //  rotation = slewRateLimiterZ.calculate(xbox.getRightX()) * 0.6;
-    //}
+    if(rotation != 0 && (forward != 0 || strafe != 0)){
+      rotation = slewRateLimiterZ.calculate(xbox.getRightX()) * 0.6;
+    }
 
     //Controller Deadband
     if(Math.abs(forward) < 0.05){
@@ -149,11 +121,15 @@ public class DriveWithXbox extends CommandBase {
     double D = forward + (rotation * (Constants.trackwidth/Constants.drivetrainRadius));
 
     //Calculates module speeds
+    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
+    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
+    double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2));
+    double rearRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
 
-    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
-    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
-    double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
-    double rearRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2));
+    double frontLeftAngle = Math.atan2(B, C)*(180/Math.PI);
+    double frontRightAngle = Math.atan2(B, D)*(180/Math.PI);
+    double rearLeftAngle = Math.atan2(A, C)*(180/Math.PI);
+    double rearRightAngle = Math.atan2(A, D)*(180/Math.PI);
 
     //Normalizes speeds (makes sure that none are > 1)
     double max = frontLeftSpeed;
@@ -173,6 +149,12 @@ public class DriveWithXbox extends CommandBase {
       rearRightSpeed = rearRightSpeed / max;
     }
 
+    //Optimization code
+    if(Math.abs(invertAngle(drivetrain.getRotEncoderValue(SwerveModule.FRONT_LEFT)) - frontLeftAngle) < Math.abs(drivetrain.getRotEncoderValue(SwerveModule.FRONT_LEFT) - frontLeftAngle)){
+      invertSpeed = -1;
+      frontLeftAngle = invertAngle(frontLeftAngle);
+    }
+
     //Make SURE the robot stops whenthe joysticks are 0
     if(forward == 0 && strafe == 0 && rotation == 0){
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, 0);
@@ -180,10 +162,10 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, 0);
 
-      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, C)*(180/Math.PI), 0);
-      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 0);
-      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 0);
-      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 0);
+      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, frontLeftAngle, 0);
+      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, frontRightAngle, 0);
+      drivetrain.rotateModule(SwerveModule.REAR_LEFT, rearLeftAngle, 0);
+      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, rearRightAngle, 0);
     }
     else{
       //Set angles for modules (change speed mod later if needed)
@@ -192,10 +174,10 @@ public class DriveWithXbox extends CommandBase {
       //FR: B, C
       //RL: A, D
       //RR: A, C
-      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, C)*(180/Math.PI), 1);
-      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 1);
-      drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 1);
-      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 1);
+      drivetrain.rotateModule(SwerveModule.FRONT_LEFT, frontLeftAngle, 1);
+      drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, frontRightAngle, 1);
+      drivetrain.rotateModule(SwerveModule.REAR_LEFT, rearLeftAngle, 1);
+      drivetrain.rotateModule(SwerveModule.REAR_RIGHT, rearRightAngle, 1);
 
       //Set speeds for modules
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed);
@@ -217,6 +199,7 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.zeroNavXYaw();
       drivetrain.resetOdometry(new Pose2d(new Translation2d(0, new Rotation2d(0)), new Rotation2d(0)));
     }
+  
   }  
 
   @Override

@@ -13,17 +13,20 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class RunFeederAuto extends InstantCommand {
+public class RunFeederAuto extends CommandBase {
    
   private final FeederSubsystem feeder;
   private final Pneumatics pnuematic;
   private double targetSpeed; 
+  private Timer timeoutTimer = new Timer();
+  private double targetTimeout;
 
-  public RunFeederAuto(double speed, FeederSubsystem fs, Pneumatics ps) {
+  public RunFeederAuto(double speed, FeederSubsystem fs, Pneumatics ps, double timeout) {
  
     feeder = fs;
     pnuematic = ps;
     targetSpeed = speed;
+    targetTimeout = timeout;
     addRequirements(feeder);
 
   }
@@ -31,10 +34,34 @@ public class RunFeederAuto extends InstantCommand {
   @Override
   public void initialize() {
 
+  timeoutTimer.start();
   feeder.runFeeder(targetSpeed);
 
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-   
+  @Override
+  public void execute() {
+ 
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    
+  }
+ 
+  @Override
+  public boolean isFinished() {
+
+    if (timeoutTimer.get() < targetTimeout) {
+
+      return false;
+
+    } else {
+
+      return true;
+
+    }
+
+  } 
+
 }
