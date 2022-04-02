@@ -331,7 +331,7 @@ public class RobotContainer {
     //AutoDriveCommand(-0.3, 0, 0, 1.5, 0.75, 0),
     
     //Drive towards ball 1.5 meters going -0.3 speed
-    AutoDriveCommand(-0.3, 0, 0, 1.5, 0, 0),
+    AutoDriveCommand(-0.3, 0, 0, 0.91, 0, 0),
     new TurretRotateAuto(turret, limelight, 2),
     adaptiveAutoShootCommand(),
     adaptiveAutoShootCommand(),
