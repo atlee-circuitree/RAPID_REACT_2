@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -23,11 +24,17 @@ public class AutoDriveByMeters extends CommandBase {
   private final Drivetrain drivetrain;
   private XboxController xbox;
 
-  private double forward;
-  private double strafe;
-  private double rotation;
+  private double forward = 0;
+  private double strafe = 0;
+  private double rotation = 0;
 
-  private double targetDistance;
+  private double targetForward;
+  private double targetStrafe;
+  private double targetRotation;
+
+  private double targetDistanceX;
+  private double targetDistanceY;
+  private double targetAngleZ;
 
   private double frontLeftEncoderMeters;
   private double frontRightEncoderMeters;
@@ -35,16 +42,23 @@ public class AutoDriveByMeters extends CommandBase {
   private double rearRightEncoderMeters;
 
   private boolean isFinished = false;
+  private int acceleratorLoop = 0;
+  
+  private double acceleratorSpeedModF = 0;
+  private double acceleratorSpeedModS = 0;
+  private double acceleratorSpeedModR = 0;
  
-  public AutoDriveByMeters(Drivetrain dt, double forwardSpeed, double strafeSpeed, double rotationSpeed, double targetDistanceMeters) {
+  public AutoDriveByMeters(Drivetrain dt, double forwardSpeed, double strafeSpeed, double rotationSpeed, double distanceX, double distanceY, double angleZ) {
     
     drivetrain = dt;
 
-    forward = forwardSpeed;
-    strafe = strafeSpeed;
-    rotation = rotationSpeed;
+    targetForward = forwardSpeed;
+    targetStrafe = strafeSpeed;
+    targetRotation = rotationSpeed;
 
-    targetDistance = targetDistanceMeters;
+    targetDistanceX = distanceX;
+    targetDistanceY = distanceY;
+    targetAngleZ = angleZ;
 
     addRequirements(drivetrain);
 
@@ -58,20 +72,83 @@ public class AutoDriveByMeters extends CommandBase {
   @Override
   public void execute() {
 
+    drivetrain.updateOdometry();
 
+    //This thing was replaced by odometry
     //2048 = encoder ticks per shaft rotation
     //8.16 = shaft rotations per wheel rotation
     //3.1328 = wheel rotations per meter
-    frontLeftEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.FRONT_LEFT)/2048/8.16/3.1328;
-    frontRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.FRONT_RIGHT)/2048/8.16/3.1328;
-    rearLeftEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_LEFT)/2048/8.16/3.1328;
-    rearRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_RIGHT)/2048/8.16/3.1328;
+    //frontLeftEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.FRONT_LEFT)/2048/8.16/3.1328;
+    //frontRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.FRONT_RIGHT)/2048/8.16/3.1328;
+    //rearLeftEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_LEFT)/2048/8.16/3.1328;
+    //rearRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_RIGHT)/2048/8.16/3.1328;
 
+    //Basically acceleration PIDs, but not using PID classes. Tune the acceleratorSpeedMod addition to make the acceleration harder/softer
+    if(acceleratorLoop >= 5 && forward < targetForward){
+      acceleratorSpeedModF = acceleratorSpeedModF + 0.01;
+      forward = forward + acceleratorSpeedModF;
+      acceleratorLoop = 0;
+    }
+    
+    if(acceleratorLoop >= 5 && forward > targetForward){
+      acceleratorSpeedModF = acceleratorSpeedModF + 0.01;
+      forward = forward - acceleratorSpeedModF;
+      acceleratorLoop = 0;
+    }
+    
+    
+    if(acceleratorLoop >= 5 && strafe < targetStrafe && targetStrafe >= 0){
+      acceleratorSpeedModS = acceleratorSpeedModS + 0.01;
+      strafe = strafe + acceleratorSpeedModS;
+      acceleratorLoop = 0;
+    }
+    if(acceleratorLoop >= 5 && strafe > targetStrafe && targetStrafe <= 0){
+      acceleratorSpeedModS = acceleratorSpeedModS - 0.01;
+      strafe = strafe + acceleratorSpeedModS;
+      acceleratorLoop = 0;
+    }
+    
+
+    if(acceleratorLoop >= 5 && rotation < targetRotation && targetRotation >= 0){
+      acceleratorSpeedModR = acceleratorSpeedModR + 0.005;
+      rotation = rotation + acceleratorSpeedModR;
+      acceleratorLoop = 0;
+    }
+    if(acceleratorLoop >= 5 && rotation > targetRotation && targetRotation <= 0){
+      acceleratorSpeedModR = acceleratorSpeedModR - 0.005;
+      rotation = rotation + acceleratorSpeedModR;
+      acceleratorLoop = 0;
+    }
+    
+
+    acceleratorLoop++;
+
+    //If the drivetrain has finished the x/y/z component of the move, stop moving in that direction so that you don't overshoot
+    if(Math.abs(drivetrain.getOdometryX()) >= targetDistanceX){
+      forward = 0;
+    }
+    if(Math.abs(drivetrain.getOdometryY()) >= targetDistanceY){
+      strafe = 0;
+    }
+    if(Math.abs(drivetrain.getOdometryZ()) >= targetAngleZ){
+      rotation = 0;
+    }
+
+    SmartDashboard.putNumber("forward", forward);
+    SmartDashboard.putNumber("strafe", strafe);
+    SmartDashboard.putNumber("rotation", rotation);
+    SmartDashboard.putNumber("acceleratorLoop", acceleratorLoop);
+
+    SmartDashboard.putNumber("Target Forward", targetForward);
+
+    SmartDashboard.putNumber("auto odometry X", drivetrain.getOdometryX());
+    SmartDashboard.putNumber("auto odometry Y", drivetrain.getOdometryY());
+    SmartDashboard.putNumber("auto odometry Z", drivetrain.getOdometryZ());
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
-    double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
-    strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
-    forward = temp;
+    //double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
+    //strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
+    //forward = temp;
 
     //Do some math to calculate the angles/sppeds needed to meet the target vectors
     //I don't have enough space to say what A,B,C and D actually represent, but the swerve documentation does it well 
@@ -81,10 +158,10 @@ public class AutoDriveByMeters extends CommandBase {
     double D = forward + (rotation * (Constants.trackwidth/Constants.drivetrainRadius));
 
     //Calculates module speeds
-    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
-    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
-    double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2));
-    double rearRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
+    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
+    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
+    double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
+    double rearRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2));
 
     //Normalizes speeds (makes sure that none are > 1)
     double max = frontLeftSpeed;
@@ -104,8 +181,10 @@ public class AutoDriveByMeters extends CommandBase {
       rearRightSpeed = rearRightSpeed / max;
     }
 
-    //Make SURE the robot stops when the joysticks are 0
-    if(Math.abs(frontLeftEncoderMeters) >= targetDistance && Math.abs(frontRightEncoderMeters) >= targetDistance && Math.abs(rearLeftEncoderMeters) >= targetDistance && Math.abs(rearRightEncoderMeters) >= targetDistance){
+
+    //Make the robot finish its move based on odometry position. This means that unless you reset the gyro in-between moves, you are moving relative to the field not the robot
+    //Basically just make sure that your new targets take this into account, or just reset the odometry in-between moves
+    if(Math.abs(drivetrain.getOdometryX()) >= targetDistanceX && Math.abs(drivetrain.getOdometryY()) >= targetDistanceY && Math.abs(drivetrain.getOdometryZ()) >= targetAngleZ){
       drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, 0);
       drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, 0);
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, 0);
@@ -129,6 +208,8 @@ public class AutoDriveByMeters extends CommandBase {
       drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, -frontRightSpeed);
       drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, -rearLeftSpeed);
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed);
+
+      isFinished = false;
     }
 
   }  

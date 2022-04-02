@@ -24,7 +24,7 @@ public class KickoutFeeder extends CommandBase {
     pnuematic = ps;
     addRequirements(pnuematic);
     targetTimeout = timeout;
-    up = Up;
+    Up = up;
 
   }
  

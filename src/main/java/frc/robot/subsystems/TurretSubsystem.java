@@ -154,7 +154,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void resetEncoder() {
 
-  turretEncoder.setPosition(0);
+    turretEncoder.setPosition(0);
 
   }
 

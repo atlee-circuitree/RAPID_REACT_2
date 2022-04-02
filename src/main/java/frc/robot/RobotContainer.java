@@ -23,9 +23,11 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.commands.AutoDriveByMeters;
 import frc.robot.commands.ControlClimbPistons;
 import frc.robot.commands.DriveWithXbox;
+import frc.robot.commands.DriveWithXboxOptimized;
 import frc.robot.commands.KickoutFeeder;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.ResetTurretEncoder;
 import frc.robot.commands.RunFeeder;
 import frc.robot.commands.RunFeederAuto;
 import frc.robot.commands.RunHook;
@@ -69,16 +71,25 @@ public class RobotContainer {
   
   //Regular Commands
   private final DriveWithXbox driveWithXbox;
+  private final DriveWithXboxOptimized driveWithXboxOptimized;
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
+  //private final PerpetualCommand DXO_SDC_TUR;
   private final RecalibrateModules recalibrateModules;
   private final TurretAndShoot turretAndShoot;
+  private final ResetGyro resetGyro;
+  private final ResetTurretEncoder resetTurretEncoder;
    
   //Command Groups
 
   public Command feederCommand(double speed) {
     Command feedCommand = new RunFeeder(speed, feeder, pneumatics);
     return feedCommand;
+  }
+
+  public Command Kickout(boolean kickIn, double timeout){
+    Command m_kickout = new KickoutFeeder(kickIn, pneumatics, timeout);
+    return m_kickout;
   }
 
   public Command hookCommand(double speed) {
@@ -110,8 +121,8 @@ public class RobotContainer {
     Command m_shootCommand = new ShooterInAuto(velocity, bottomVelocity, turret, pneumatics, limelight, feeder);
     return m_shootCommand;
   }
-  public Command AutoDriveCommand(double forward, double strafe, double rotation, double distanceMeters){
-    Command m_AutoDriveByMeters = new AutoDriveByMeters(drivetrain, forward, strafe, rotation, distanceMeters);
+  public Command AutoDriveCommand(double forward, double strafe, double rotation, double distanceX, double distanceY, double angleZ){
+    Command m_AutoDriveByMeters = new AutoDriveByMeters(drivetrain, forward, strafe, rotation, distanceX, distanceY, angleZ);
     return m_AutoDriveByMeters;
   } 
 
@@ -131,6 +142,12 @@ public class RobotContainer {
     driveWithXbox = new DriveWithXbox(drivetrain, xbox, false);
     driveWithXbox.addRequirements(drivetrain);
 
+    driveWithXboxOptimized = new DriveWithXboxOptimized(drivetrain, xbox, false);
+    //driveWithXboxOptimized.addRequirements(drivetrain);
+
+    resetGyro = new ResetGyro(drivetrain);
+    resetTurretEncoder = new ResetTurretEncoder(turret);
+
     smartDashboardCommand = new SmartDashboardCommand();
 
     turretAndShoot = new TurretAndShoot(turret, pneumatics, limelight, xbox2);
@@ -144,9 +161,11 @@ public class RobotContainer {
     recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
     DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand).alongWith(turretAndShoot));
+    //DXO_SDC_TUR = new PerpetualCommand(driveWithXboxOptimized.alongWith(smartDashboardCommand).alongWith(turretAndShoot));
     
     //drivetrain.setDefaultCommand(recalibrateModules);
     drivetrain.setDefaultCommand(DWX_SDC_TUR);
+    //drivetrain.setDefaultCommand(DXO_SDC_TUR);
   }
 
   /**
@@ -160,7 +179,7 @@ public class RobotContainer {
     //P1 BUTTONS
     JoystickButton DriverA = new JoystickButton(xbox, XboxController.Button.kA.value);
     JoystickButton DriverB = new JoystickButton(xbox, XboxController.Button.kB.value);
-    
+    JoystickButton DriverBack = new JoystickButton(xbox, XboxController.Button.kBack.value);
     JoystickButton DriverLB = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     JoystickButton DriverRB = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
 
@@ -197,23 +216,27 @@ public class RobotContainer {
     DriverLT.whileActiveContinuous(feederCommand(-.72));
     DriverRT.whileActiveContinuous(feederCommand(.72));
 
-    DriverLB.whileHeld(hookCommand(-.8));
-    DriverRB.whileHeld(hookCommand(.8));
+    //DriverLB.whileHeld(hookCommand(-.8));
+    //DriverRB.whileHeld(hookCommand(.8));
+
+    DriverLB.whileHeld(hookCommand(-.9));
+    DriverRB.whileHeld(hookCommand(.9));
+
+    DriverLB.whenReleased(hookCommand(0));
+    DriverRB.whenReleased(hookCommand(0));
+
+    DriverBack.whenPressed(resetGyro);
 
     //P2 BUTTONS
     JoystickButton Driver2A = new JoystickButton(xbox2, XboxController.Button.kA.value);
     JoystickButton Driver2B = new JoystickButton(xbox2, XboxController.Button.kB.value);
     JoystickButton Driver2Y = new JoystickButton(xbox2, XboxController.Button.kY.value);
     JoystickButton Driver2X = new JoystickButton(xbox2, XboxController.Button.kX.value);
+    JoystickButton Driver2Back = new JoystickButton(xbox2, XboxController.Button.kBack.value);
     JoystickButton Driver2LB = new JoystickButton(xbox2, 5);
     JoystickButton Driver2RB = new JoystickButton(xbox2, 6);
 
-    //7600 works from close safe zone
-    //Driver2A.whenPressed(SimpleShootCommand(7600));
-    //Driver2B.whenPressed(SimpleShootCommand(8400));
-    //9200 works from far safe zone
-    //Driver2Y.whenPressed(SimpleShootCommand(9200));
-    //Driver2X.whenPressed(SimpleShootCommand(4000));
+    Driver2Back.whenPressed(resetTurretEncoder);
 
     //FIGHTSTICK BUTTONS
     JoystickButton FightstickShare = new JoystickButton(fightstick, 7);
@@ -223,8 +246,8 @@ public class RobotContainer {
     JoystickButton FightstickL3 = new JoystickButton(fightstick, 9);
     JoystickButton FightstickR3 = new JoystickButton(fightstick, 10);
    
-    FightstickShare.whenPressed(new KickoutFeeder(false, pneumatics, .1));
-    FightstickOption.whenPressed(new KickoutFeeder(true, pneumatics, .1));
+    FightstickShare.whenPressed(Kickout(true, .1));
+    FightstickOption.whenPressed(Kickout(false, .1));
     FightstickL3.whenHeld(climbCommand(true));
     FightstickR3.whenHeld(climbCommand(false));
 
@@ -237,6 +260,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Create config for trajectory
+
+    /*
+
     TrajectoryConfig config =
         new TrajectoryConfig(
                 2, 1)
@@ -289,8 +315,30 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     //return swerveControllerCommand.andThen(() -> drivetrain.driveAllModulesNonLinear(0));
+    */
 
+    //Auto Drive command parameters in order: (forwardSpeed, strafeSpeed, rotationSpeed (keep very low), target forward distance, target strafe distance, target angle)
+    //To go backwards, invert speed, NOT DISTANCE
+    SequentialCommandGroup autoTest = new SequentialCommandGroup(
+    new ResetGyro(drivetrain), 
+    new KickoutFeeder(false, pneumatics, 1),
+    new RunFeederAuto(.8, feeder, pneumatics, .1),
+    
+    //Strafe compressor side 0.75 meters going -0.3 speed
+    //AutoDriveCommand(0, -0.3, 0, 0, 0.75, 0),
+    
+    //Drive feed side 1.5 meters going -0.3 speed
+    //AutoDriveCommand(-0.3, 0, 0, 1.5, 0.75, 0),
+    
+    //Drive towards ball 1.5 meters going -0.3 speed
+    AutoDriveCommand(-0.3, 0, 0, 1.5, 0, 0),
+    new TurretRotateAuto(turret, limelight, 2),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    new RunFeederAuto(0, feeder, pneumatics, .1)
+    );
+    
     return autoTest;
-    //return AutoDriveCommand(0.5, 0.5, 0, 5);
+    
   }
 }

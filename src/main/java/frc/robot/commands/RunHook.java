@@ -14,37 +14,35 @@ import frc.robot.subsystems.TurretSubsystem;
 
 public class RunHook extends CommandBase {
    
-  private final Pneumatics pnuematic;
+  private final Pneumatics pneumatic;
   private double targetSpeed; 
 
   public RunHook(double speed, Pneumatics ps) {
  
+    pneumatic = ps;
     targetSpeed = speed;
-    pnuematic = ps;
-    addRequirements(pnuematic);
-    //speed = targetSpeed;
-    
+    addRequirements(pneumatic);
 
   }
  
   @Override
   public void initialize() {
+    
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    pnuematic.runHookMotor(targetSpeed);
-
-    System.out.println("Running hook");
+    pneumatic.runHookMotor(targetSpeed);
  
   }
 
   @Override
   public void end(boolean interrupted) {
 
-    pnuematic.runHookMotor(0);
+    //pneumatic.runHookMotor(0);
      
   }
 

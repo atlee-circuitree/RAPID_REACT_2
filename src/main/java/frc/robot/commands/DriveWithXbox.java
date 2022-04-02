@@ -117,9 +117,9 @@ public class DriveWithXbox extends CommandBase {
 
     */
 
-    forward = xbox.getLeftY() * 0.6;
-    strafe = xbox.getLeftX() * 0.6;
-    rotation = xbox.getRightX() * 0.6;
+    forward = xbox.getLeftY() * 0.4;
+    strafe = xbox.getLeftX() * 0.4;
+    rotation = xbox.getRightX() * 0.4;
 
     //if(rotation != 0 && (forward != 0 || strafe != 0)){
     //  rotation = slewRateLimiterZ.calculate(xbox.getRightX()) * 0.6;

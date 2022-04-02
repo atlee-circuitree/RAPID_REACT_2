@@ -169,7 +169,7 @@ public class Drivetrain extends SubsystemBase {
     drivetrainDashboard = drivetrainDashboard + "odometry Y/" + odometry.getPoseMeters().getY() + ";";
     drivetrainDashboard = drivetrainDashboard + "odometry Z/" + odometry.getPoseMeters().getRotation().getDegrees() + ";";
 
-    drivetrainDashboard = drivetrainDashboard + "Encoder Last Error/" + frontRightRotEncoder.getLastError() + ";";
+    drivetrainDashboard = drivetrainDashboard + "FL Encoder Position/" + getDriveEncoder(SwerveModule.FRONT_LEFT) + ";";
 
   }
 
@@ -540,12 +540,37 @@ public double customPID(double target){
 
 //AUTO STUFF
 
-public Pose2d getPose() {
+public Pose2d getPose(){
   return odometry.getPoseMeters();
+}
+
+public double getOdometryX(){
+  return odometry.getPoseMeters().getX();
+}
+public double getOdometryY(){
+  return odometry.getPoseMeters().getY();
+}
+public double getOdometryZ(){
+  return odometry.getPoseMeters().getRotation().getDegrees();
 }
 
 public void resetOdometry(Pose2d pose2d) {
   odometry.resetPosition(pose2d, navx.getRotation2d());
+}
+
+public void updateOdometry(){
+    odometry.update(navx.getRotation2d(), 
+    new SwerveModuleState(positionChangePer100msToMetersPerSecond(frontLeftDrvMotor.getSelectedSensorVelocity()), 
+    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.FRONT_LEFT))),
+    
+    new SwerveModuleState(positionChangePer100msToMetersPerSecond(frontRightDrvMotor.getSelectedSensorVelocity()), 
+    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.FRONT_RIGHT))),
+    
+    new SwerveModuleState(positionChangePer100msToMetersPerSecond(rearLeftDrvMotor.getSelectedSensorVelocity()), 
+    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_LEFT))),
+    
+    new SwerveModuleState(positionChangePer100msToMetersPerSecond(rearRightDrvMotor.getSelectedSensorVelocity()), 
+    Rotation2d.fromDegrees(getRotEncoderValue(SwerveModule.REAR_RIGHT))));
 }
 
 public void setSwerveModuleStates(SwerveModuleState[] targetState){

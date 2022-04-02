@@ -151,8 +151,20 @@ public class DriveWithXboxOptimized extends CommandBase {
 
     //Optimization code
     if(Math.abs(invertAngle(drivetrain.getRotEncoderValue(SwerveModule.FRONT_LEFT)) - frontLeftAngle) < Math.abs(drivetrain.getRotEncoderValue(SwerveModule.FRONT_LEFT) - frontLeftAngle)){
-      invertSpeed = -1;
+      frontLeftSpeed = frontLeftSpeed * -1;
       frontLeftAngle = invertAngle(frontLeftAngle);
+    }
+    if(Math.abs(invertAngle(drivetrain.getRotEncoderValue(SwerveModule.FRONT_RIGHT)) - frontRightAngle) < Math.abs(drivetrain.getRotEncoderValue(SwerveModule.FRONT_RIGHT) - frontRightAngle)){
+      frontRightSpeed = frontRightSpeed * -1;
+      frontRightAngle = invertAngle(frontRightAngle);
+    }
+    if(Math.abs(invertAngle(drivetrain.getRotEncoderValue(SwerveModule.REAR_LEFT)) - rearLeftAngle) < Math.abs(drivetrain.getRotEncoderValue(SwerveModule.REAR_LEFT) - rearLeftAngle)){
+      rearLeftSpeed = rearLeftSpeed * -1;
+      rearLeftAngle = invertAngle(rearLeftAngle);
+    }
+    if(Math.abs(invertAngle(drivetrain.getRotEncoderValue(SwerveModule.REAR_RIGHT)) - rearRightAngle) < Math.abs(drivetrain.getRotEncoderValue(SwerveModule.REAR_RIGHT) - rearRightAngle)){
+      rearRightSpeed = rearRightSpeed * -1;
+      rearRightAngle = invertAngle(rearRightAngle);
     }
 
     //Make SURE the robot stops whenthe joysticks are 0
