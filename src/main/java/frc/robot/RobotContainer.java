@@ -12,6 +12,8 @@ import javax.crypto.SealedObject;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.commands.AutoDriveByMeters;
 import frc.robot.commands.ControlClimbPistons;
 import frc.robot.commands.DriveWithXbox;
@@ -71,7 +74,6 @@ public class RobotContainer {
   
   //Regular Commands
   private final DriveWithXbox driveWithXbox;
-  private final DriveWithXboxOptimized driveWithXboxOptimized;
   private final SmartDashboardCommand smartDashboardCommand;
   private final PerpetualCommand DWX_SDC_TUR;
   //private final PerpetualCommand DXO_SDC_TUR;
@@ -81,6 +83,12 @@ public class RobotContainer {
   private final ResetTurretEncoder resetTurretEncoder;
    
   //Command Groups
+  private final SequentialCommandGroup twoBallWallSide;
+  private final SequentialCommandGroup twoBallMiddle;
+  private final SequentialCommandGroup twoBallHangarSide;
+  private final SequentialCommandGroup fourBallMiddle;
+
+  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public Command feederCommand(double speed) {
     Command feedCommand = new RunFeeder(speed, feeder, pneumatics);
@@ -108,23 +116,14 @@ public class RobotContainer {
   }
 
   public Command adaptiveAutoShootCommand() {
-    //Limelight stuff
-    double distance = limelight.getDistanceToTarget();
- 
-    int roundedDistance = (int) Math.round(distance * 10);
-    
-    LaunchVelocity[] launchVelocityArray = turret.getDistanceToVelocityArray();
-
-    double velocity = launchVelocityArray[roundedDistance].topMotorVelocity;
-
-    double bottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
-    Command m_shootCommand = new ShooterInAuto(velocity, bottomVelocity, turret, pneumatics, limelight, feeder);
+    Command m_shootCommand = new ShooterInAuto(turret, pneumatics, limelight, feeder);
     return m_shootCommand;
   }
   public Command AutoDriveCommand(double forward, double strafe, double rotation, double distanceX, double distanceY, double angleZ){
     Command m_AutoDriveByMeters = new AutoDriveByMeters(drivetrain, forward, strafe, rotation, distanceX, distanceY, angleZ);
     return m_AutoDriveByMeters;
   } 
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -142,9 +141,6 @@ public class RobotContainer {
     driveWithXbox = new DriveWithXbox(drivetrain, xbox, false);
     driveWithXbox.addRequirements(drivetrain);
 
-    driveWithXboxOptimized = new DriveWithXboxOptimized(drivetrain, xbox, false);
-    //driveWithXboxOptimized.addRequirements(drivetrain);
-
     resetGyro = new ResetGyro(drivetrain);
     resetTurretEncoder = new ResetTurretEncoder(turret);
 
@@ -161,11 +157,71 @@ public class RobotContainer {
     recalibrateModules = new RecalibrateModules(drivetrain, xbox);
 
     DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand).alongWith(turretAndShoot));
-    //DXO_SDC_TUR = new PerpetualCommand(driveWithXboxOptimized.alongWith(smartDashboardCommand).alongWith(turretAndShoot));
     
     //drivetrain.setDefaultCommand(recalibrateModules);
     drivetrain.setDefaultCommand(DWX_SDC_TUR);
-    //drivetrain.setDefaultCommand(DXO_SDC_TUR);
+
+    //Auto Setup
+    //To reverse, negate speed not distance
+    twoBallWallSide = new SequentialCommandGroup(
+    new ResetGyro(drivetrain), 
+    new KickoutFeeder(false, pneumatics, 1),
+    new RunFeederAuto(.8, feeder, pneumatics, .1),
+    //Drive towards ball 1.5 meters going -0.3 speed
+    AutoDriveCommand(-0.15, 0, 0, 0.96, 0, 0),
+    AutoDriveCommand(0, 0.15, 0, 0, 1, 0),
+    new TurretRotateAuto(turret, limelight, 2),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    new RunFeederAuto(0, feeder, pneumatics, .1)
+    );
+
+    twoBallMiddle = new SequentialCommandGroup(
+    new ResetGyro(drivetrain), 
+    new KickoutFeeder(false, pneumatics, 1),
+    new RunFeederAuto(.8, feeder, pneumatics, .1),
+    AutoDriveCommand(-0.15, 0, 0, 1.5, 0, 0),
+    new TurretRotateAuto(turret, limelight, 2),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    new RunFeederAuto(0, feeder, pneumatics, .1)
+    );
+
+    twoBallHangarSide = new SequentialCommandGroup(
+    new ResetGyro(drivetrain), 
+    new KickoutFeeder(false, pneumatics, 1),
+    new RunFeederAuto(.8, feeder, pneumatics, .1),
+    AutoDriveCommand(-0.15, 0, 0, 1.5, 0, 0),
+    new TurretRotateAuto(turret, limelight, 2),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    new RunFeederAuto(0, feeder, pneumatics, .1)
+    );
+
+    fourBallMiddle = new SequentialCommandGroup(
+    new ResetGyro(drivetrain), 
+    new KickoutFeeder(false, pneumatics, .5),
+    new RunFeederAuto(.8, feeder, pneumatics, .05),
+    AutoDriveCommand(-0.2, 0, 0, 1, 0, 0),
+    new TurretRotateAuto(turret, limelight, .50),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    AutoDriveCommand(0, 0.2, 0, 0, 1.25, 0),
+    AutoDriveCommand(-0.2, 0, 0, 3, 0, 0),
+    WaitCommand(.5),
+    AutoDriveCommand(0.2, 0, 0, 3, 0, 0),
+    new TurretRotateAuto(turret, limelight, .15),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    new RunFeederAuto(0, feeder, pneumatics, .1)
+    );
+
+    autoChooser.addOption("2 Ball Wall Side", twoBallWallSide);
+    autoChooser.addOption("2 Ball Middle", twoBallMiddle);
+    autoChooser.addOption("2 Ball Hangar Side", twoBallHangarSide);
+    autoChooser.addOption("4 Ball Middle", fourBallMiddle);
+
+    SmartDashboard.putData("Select Auto", autoChooser);
   }
 
   /**
@@ -319,26 +375,8 @@ public class RobotContainer {
 
     //Auto Drive command parameters in order: (forwardSpeed, strafeSpeed, rotationSpeed (keep very low), target forward distance, target strafe distance, target angle)
     //To go backwards, invert speed, NOT DISTANCE
-    SequentialCommandGroup autoTest = new SequentialCommandGroup(
-    new ResetGyro(drivetrain), 
-    new KickoutFeeder(false, pneumatics, 1),
-    new RunFeederAuto(.8, feeder, pneumatics, .1),
     
-    //Strafe compressor side 0.75 meters going -0.3 speed
-    //AutoDriveCommand(0, -0.3, 0, 0, 0.75, 0),
-    
-    //Drive feed side 1.5 meters going -0.3 speed
-    //AutoDriveCommand(-0.3, 0, 0, 1.5, 0.75, 0),
-    
-    //Drive towards ball 1.5 meters going -0.3 speed
-    AutoDriveCommand(-0.3, 0, 0, 0.91, 0, 0),
-    new TurretRotateAuto(turret, limelight, 2),
-    adaptiveAutoShootCommand(),
-    adaptiveAutoShootCommand(),
-    new RunFeederAuto(0, feeder, pneumatics, .1)
-    );
-    
-    return autoTest;
+    return autoChooser.getSelected();
     
   }
 }

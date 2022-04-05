@@ -18,6 +18,10 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 import java.lang.Math;
 
+/*
+  NOTE: This class is currently not functional
+*/
+
 public class DriveWithXboxOptimized extends CommandBase {
 
   private final Drivetrain drivetrain;
@@ -65,24 +69,6 @@ public class DriveWithXboxOptimized extends CommandBase {
 
   @Override
   public void execute() {
-    /*
-    Holy cow this is going to be A LOT of code eventually...
-    (Actually, it's pretty compact/efficient currently. I thought this was going to need a lot more code... - Simon 8/3/21)
-    (You were a fool, past Simon. This is going to be a lot of code, and even more math - Simon 10/11/21)
-    (This is getting out of hand *Screams in PID* - Simon 11/12/21)
-
-    IF YOU DO WANT TO EDIT THIS COMMAND, BE SURE TO READ THE SWERVE PDFs
-    (can be found on chief delphi, search for "4 wheel independent drive independent steering swerve", should be 1st 2 PDFs)
-
-    Steps of what we need to do:
-    1. Convert joystick X/Y values to degrees **Added compicated yet necessary math**   
-    2. Modify that value by NavX position to do field orientation
-    3. Feed final value to a rotateModules() function
-    4. Get speed value from joystick
-    5. Feed that to a driveMotors() function 
-    6. Add in a rotateEntireRobot() function using the other joystick and hope it doesnt break anything 
-    7. Debug the heck out of this command **Currently on this step - Simon**
-    */
 
     //Define robot target vector variables (X,Y,Z respectively)  
     //double forward = -slewRateLimiterX.calculate(RobotContainer.xbox.getLeftY());
@@ -121,10 +107,10 @@ public class DriveWithXboxOptimized extends CommandBase {
     double D = forward + (rotation * (Constants.trackwidth/Constants.drivetrainRadius));
 
     //Calculates module speeds
-    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
-    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
-    double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2));
-    double rearRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
+    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
+    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
+    double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
+    double rearRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2));
 
     double frontLeftAngle = Math.atan2(B, C)*(180/Math.PI);
     double frontRightAngle = Math.atan2(B, D)*(180/Math.PI);

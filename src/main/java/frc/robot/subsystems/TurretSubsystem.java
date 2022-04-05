@@ -173,7 +173,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public boolean checkShootVelocity(double topVelocity, double bottomVelocity, Timer timer, double timeout) {
 
-    if (topShootMotor.getSelectedSensorVelocity() > topVelocity - 100 || timer.get() > timeout) {
+    if (Math.abs(topShootMotor.getSelectedSensorVelocity()) > topVelocity - 100 || timer.get() > timeout) {
       
       return true;
 

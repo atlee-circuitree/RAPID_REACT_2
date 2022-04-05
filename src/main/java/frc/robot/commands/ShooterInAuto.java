@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.LaunchVelocity;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Pneumatics;
@@ -30,22 +31,30 @@ public class ShooterInAuto extends CommandBase {
 
   double startingTime = shooterTime.get();   
 
-  public ShooterInAuto(double targetVelocity, double targetBottom, TurretSubsystem ts, Pneumatics ps, LimeLightSubsystem ls, FeederSubsystem fs) {
+  public ShooterInAuto(TurretSubsystem ts, Pneumatics ps, LimeLightSubsystem ls, FeederSubsystem fs) {
  
     turret = ts;
     pneumatic = ps;
     limelight = ls;
     feeder = fs;
-    bottomVelocity = targetBottom;
-    velocity = targetVelocity;
     addRequirements(turret);
     
   }
  
   @Override
   public void initialize() {
-    
+
     //Limelight stuff
+    double distance = limelight.getDistanceToTarget();
+ 
+    int roundedDistance = (int) Math.round(distance * 10);
+    
+    LaunchVelocity[] launchVelocityArray = turret.getDistanceToVelocityArray();
+
+    velocity = launchVelocityArray[roundedDistance].topMotorVelocity;
+
+    bottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
+
     distance = limelight.getDistanceToTarget();
     //PUT ALGORITHIM HERE
     shooterTime.start();
@@ -59,11 +68,11 @@ public class ShooterInAuto extends CommandBase {
 
     
       turret.runTurretWithVelocity(velocity, bottomVelocity);
-      Timer.delay(1);
+      Timer.delay(.5);
       pneumatic.shooterUp();
-      Timer.delay(1.5);
-      pneumatic.shooterDown();
       Timer.delay(1);
+      pneumatic.shooterDown();
+      Timer.delay(.5);
       turret.runTurretWithVelocity(0, bottomVelocity);
 
     

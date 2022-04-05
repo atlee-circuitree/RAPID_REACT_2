@@ -42,7 +42,9 @@ public class AutoDriveByMeters extends CommandBase {
   private double rearRightEncoderMeters;
 
   private boolean isFinished = false;
-  private int acceleratorLoop = 0;
+  private int acceleratorLoopF = 0;
+  private int acceleratorLoopS = 0;
+  private int acceleratorLoopR = 0;
   
   private double acceleratorSpeedModF = 0;
   private double acceleratorSpeedModS = 0;
@@ -52,9 +54,13 @@ public class AutoDriveByMeters extends CommandBase {
     
     drivetrain = dt;
 
-    targetForward = forwardSpeed;
-    targetStrafe = strafeSpeed;
-    targetRotation = rotationSpeed;
+    //targetForward = forwardSpeed;
+    //targetStrafe = strafeSpeed;
+    //targetRotation = rotationSpeed;
+
+    forward = forwardSpeed;
+    strafe = strafeSpeed;
+    rotation = rotationSpeed;
 
     targetDistanceX = distanceX;
     targetDistanceY = distanceY;
@@ -67,6 +73,8 @@ public class AutoDriveByMeters extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.resetDriveEncoders();
+    drivetrain.zeroNavXYaw();
+    drivetrain.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
 
   @Override
@@ -84,44 +92,48 @@ public class AutoDriveByMeters extends CommandBase {
     //rearRightEncoderMeters = drivetrain.getDriveEncoder(SwerveModule.REAR_RIGHT)/2048/8.16/3.1328;
 
     //Basically acceleration PIDs, but not using PID classes. Tune the acceleratorSpeedMod addition to make the acceleration harder/softer
-    if(acceleratorLoop >= 5 && forward < targetForward){
+    /*
+    if(acceleratorLoopF >= 5 && forward < targetForward){
       acceleratorSpeedModF = acceleratorSpeedModF + 0.01;
       forward = forward + acceleratorSpeedModF;
-      acceleratorLoop = 0;
+      acceleratorLoopF = 0;
     }
     
-    if(acceleratorLoop >= 5 && forward > targetForward){
+    if(acceleratorLoopF >= 5 && forward > targetForward){
       acceleratorSpeedModF = acceleratorSpeedModF + 0.01;
       forward = forward - acceleratorSpeedModF;
-      acceleratorLoop = 0;
+      acceleratorLoopF = 0;
     }
     
     
-    if(acceleratorLoop >= 5 && strafe < targetStrafe && targetStrafe >= 0){
+    if(acceleratorLoopS >= 5 && strafe < targetStrafe && targetStrafe >= 0){
       acceleratorSpeedModS = acceleratorSpeedModS + 0.01;
       strafe = strafe + acceleratorSpeedModS;
-      acceleratorLoop = 0;
+      acceleratorLoopS = 0;
     }
-    if(acceleratorLoop >= 5 && strafe > targetStrafe && targetStrafe <= 0){
+    if(acceleratorLoopS >= 5 && strafe > targetStrafe && targetStrafe <= 0){
       acceleratorSpeedModS = acceleratorSpeedModS - 0.01;
       strafe = strafe + acceleratorSpeedModS;
-      acceleratorLoop = 0;
+      acceleratorLoopS = 0;
     }
     
 
-    if(acceleratorLoop >= 5 && rotation < targetRotation && targetRotation >= 0){
+    if(acceleratorLoopR >= 5 && rotation < targetRotation && targetRotation >= 0){
       acceleratorSpeedModR = acceleratorSpeedModR + 0.005;
       rotation = rotation + acceleratorSpeedModR;
-      acceleratorLoop = 0;
+      acceleratorLoopR = 0;
     }
-    if(acceleratorLoop >= 5 && rotation > targetRotation && targetRotation <= 0){
+    if(acceleratorLoopR >= 5 && rotation > targetRotation && targetRotation <= 0){
       acceleratorSpeedModR = acceleratorSpeedModR - 0.005;
       rotation = rotation + acceleratorSpeedModR;
-      acceleratorLoop = 0;
+      acceleratorLoopR = 0;
     }
     
 
-    acceleratorLoop++;
+    acceleratorLoopF++;
+    acceleratorLoopS++;
+    acceleratorLoopR++;
+    */
 
     //If the drivetrain has finished the x/y/z component of the move, stop moving in that direction so that you don't overshoot
     if(Math.abs(drivetrain.getOdometryX()) >= targetDistanceX){
@@ -137,7 +149,7 @@ public class AutoDriveByMeters extends CommandBase {
     SmartDashboard.putNumber("forward", forward);
     SmartDashboard.putNumber("strafe", strafe);
     SmartDashboard.putNumber("rotation", rotation);
-    SmartDashboard.putNumber("acceleratorLoop", acceleratorLoop);
+    SmartDashboard.putNumber("acceleratorLoopF", acceleratorLoopF);
 
     SmartDashboard.putNumber("Target Forward", targetForward);
 

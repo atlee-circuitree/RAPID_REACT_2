@@ -142,6 +142,7 @@ public class TurretAndShoot extends CommandBase {
     }
 
     //Pneumatic logic
+    
     if (turret.checkShootVelocity(targetTopVelocity, targetBottomVelocity, timeoutTime, timeout) == false && InShot == true) {
 
     pneumaticTime.reset();
@@ -183,9 +184,10 @@ public class TurretAndShoot extends CommandBase {
     System.out.println("Done " + pneumaticTime.get());
 
     }
+    
 
     //Turret logic
-    if (xboxController.getLeftBumper() == true) {
+    if (xboxController.getLeftTriggerAxis() > 0.2) {
 
       turret.turnTurret(xboxController.getLeftX() / 4);
 
