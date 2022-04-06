@@ -61,6 +61,9 @@ public class TurretSubsystem extends SubsystemBase {
 
     
     SmartDashboard.putNumber("Turret Angle", getTurretEncoder());
+
+    SmartDashboard.putNumber("Top Velocity", topShootMotor.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Bottom Velocity", bottomShootMotor.getSelectedSensorVelocity());
     
     double smartVelocity = SmartDashboard.getNumber("Turret Velocity", 0);
     double smartBottomMotorMod = SmartDashboard.getNumber("Turret Bottom Velocity", 1);
@@ -173,7 +176,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public boolean checkShootVelocity(double topVelocity, double bottomVelocity, Timer timer, double timeout) {
 
-    if (Math.abs(topShootMotor.getSelectedSensorVelocity()) > topVelocity - 100 || timer.get() > timeout) {
+    if ((Math.abs(topShootMotor.getSelectedSensorVelocity() - topVelocity) <= 150 && Math.abs(bottomShootMotor.getSelectedSensorVelocity() - bottomVelocity) <= 150) || timer.get() > timeout) {
       
       return true;
 
@@ -185,6 +188,19 @@ public class TurretSubsystem extends SubsystemBase {
 
   }
 
+  public boolean checkShootVelocityNoTimeout(double topVelocity, double bottomVelocity) {
+
+    if ((Math.abs(topShootMotor.getSelectedSensorVelocity() - topVelocity) <= 150 && Math.abs(bottomShootMotor.getSelectedSensorVelocity() - bottomVelocity) <= 150)) {
+      
+      return true;
+
+    } else {
+
+      return false;
+
+    }
+
+  }
 
   public void killTurretMotors(){
 

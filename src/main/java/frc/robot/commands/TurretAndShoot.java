@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -83,6 +84,10 @@ public class TurretAndShoot extends CommandBase {
     adaptiveTopVelocity = launchVelocityArray[roundedDistance].topMotorVelocity;
 
     adaptiveBottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
+
+    SmartDashboard.putNumber("Limelight Rounded Distance", roundedDistance);
+    SmartDashboard.putNumber("Adaptive Top Velocity", adaptiveTopVelocity);
+    SmartDashboard.putNumber("Adaptive Bottom Velocity", adaptiveBottomVelocity);
 
     //Change velocity based on what buttons are held
     //A = Adaptive, B = Medium, Y = High, X = Low, Back = Shuffleboard
@@ -211,6 +216,7 @@ public class TurretAndShoot extends CommandBase {
       turret.resetEncoder();
   
     }
+
 
   }
 

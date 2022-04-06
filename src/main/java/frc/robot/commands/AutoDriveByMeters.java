@@ -51,9 +51,9 @@ public class AutoDriveByMeters extends CommandBase {
   private int acceleratorLoopS = 0;
   private int acceleratorLoopR = 0;
   
-  private double acceleratorSpeedModF = 0;
-  private double acceleratorSpeedModS = 0;
-  private double acceleratorSpeedModR = 0;
+  private double acceleratorSpeedModF = .5;
+  private double acceleratorSpeedModS = .5;
+  private double acceleratorSpeedModR = .5;
  
   public AutoDriveByMeters(Drivetrain dt, LimeLightSubsystem ls, TurretSubsystem ts, double forwardSpeed, double strafeSpeed, double rotationSpeed, double distanceX, double distanceY, double angleZ) {
     
@@ -199,7 +199,6 @@ public class AutoDriveByMeters extends CommandBase {
       rearLeftSpeed = rearLeftSpeed / max;
       rearRightSpeed = rearRightSpeed / max;
     }
-
 
     //Make the robot finish its move based on odometry position. This means that unless you reset the gyro in-between moves, you are moving relative to the field not the robot
     //Basically just make sure that your new targets take this into account, or just reset the odometry in-between moves
