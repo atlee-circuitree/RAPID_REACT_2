@@ -120,7 +120,7 @@ public class RobotContainer {
     return m_shootCommand;
   }
   public Command AutoDriveCommand(double forward, double strafe, double rotation, double distanceX, double distanceY, double angleZ){
-    Command m_AutoDriveByMeters = new AutoDriveByMeters(drivetrain, forward, strafe, rotation, distanceX, distanceY, angleZ);
+    Command m_AutoDriveByMeters = new AutoDriveByMeters(drivetrain, limelight, turret, forward, strafe, rotation, distanceX, distanceY, angleZ);
     return m_AutoDriveByMeters;
   } 
 
@@ -199,22 +199,57 @@ public class RobotContainer {
     );
 
     fourBallMiddle = new SequentialCommandGroup(
+    
     new ResetGyro(drivetrain), 
     new KickoutFeeder(false, pneumatics, .5),
-    new RunFeederAuto(.8, feeder, pneumatics, .05),
-    AutoDriveCommand(-0.2, 0, 0, 1, 0, 0),
-    new TurretRotateAuto(turret, limelight, .50),
+    new RunFeederAuto(.6, feeder, pneumatics, .05),
+    AutoDriveCommand(-0.3, 0, 0, 2.5, 0, 0),
+    new TurretRotateAuto(turret, limelight, .5),
     adaptiveAutoShootCommand(),
     adaptiveAutoShootCommand(),
-    AutoDriveCommand(0, 0.2, 0, 0, 1.25, 0),
-    AutoDriveCommand(-0.2, 0, 0, 3, 0, 0),
+    AutoDriveCommand(0, 0, -.3, 0, 0, 7),
+    AutoDriveCommand(-0.35, 0, 0, 2.05, 0, 0), //3.5 last
+    AutoDriveCommand(0, 0, .3, 0, 0, 23),
+    AutoDriveCommand(-0.35, 0, 0, .30, 0, 0),
+    AutoDriveCommand(0.7, 0, 0, 1.5, 0, 0),
+    AutoDriveCommand(0, 0, -.3, 0, 0, 45),
+    new TurretRotateAuto(turret, limelight, .5),
+    adaptiveAutoShootCommand()
+    
+    /*
     WaitCommand(.5),
-    AutoDriveCommand(0.2, 0, 0, 3, 0, 0),
-    new TurretRotateAuto(turret, limelight, .15),
+    AutoDriveCommand(0.45, 0, 0, 3, 0, 0),
+    AutoDriveCommand(0, 0, -.3, 0, 0, 35),
+    new TurretRotateAuto(turret, limelight, 1.5),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    new RunFeederAuto(0, feeder, pneumatics, .1)
+    */
+    );
+
+    /*
+    fourBallMiddle = new SequentialCommandGroup(
+    new ResetGyro(drivetrain), 
+    new KickoutFeeder(false, pneumatics, .5),
+    new RunFeederAuto(.7, feeder, pneumatics, .05),
+    AutoDriveCommand(-0.25, 0, 0, 2, 0, 0),
+    adaptiveAutoShootCommand(),
+    adaptiveAutoShootCommand(),
+    AutoDriveCommand(0, 0.35, 0, 0, 1, 0),
+    AutoDriveCommand(-0.35, 0, 0, 2.43, 0, 0),
+    AutoDriveCommand(0, 0, .4, 0, 0, 10),
+    AutoDriveCommand(-0.4, 0, 0, .5, 0, 0),   
+    WaitCommand(.5),
+    AutoDriveCommand(0.45, 0, 0, 3, 0, 0),
+    AutoDriveCommand(0, 0, -.3, 0, 0, 35),
+    new TurretRotateAuto(turret, limelight, 1.5),
     adaptiveAutoShootCommand(),
     adaptiveAutoShootCommand(),
     new RunFeederAuto(0, feeder, pneumatics, .1)
     );
+
+
+    */
 
     autoChooser.addOption("2 Ball Wall Side", twoBallWallSide);
     autoChooser.addOption("2 Ball Middle", twoBallMiddle);

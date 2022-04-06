@@ -70,7 +70,7 @@ public class ShooterInAuto extends CommandBase {
       turret.runTurretWithVelocity(velocity, bottomVelocity);
       Timer.delay(.5);
       pneumatic.shooterUp();
-      Timer.delay(1);
+      Timer.delay(.7);
       pneumatic.shooterDown();
       Timer.delay(.5);
       turret.runTurretWithVelocity(0, bottomVelocity);

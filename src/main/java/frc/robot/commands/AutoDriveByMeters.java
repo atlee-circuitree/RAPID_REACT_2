@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.Drivetrain.Motors;
 import frc.robot.subsystems.Drivetrain.SwerveModule;
 
@@ -22,6 +24,9 @@ import java.lang.Math;
 public class AutoDriveByMeters extends CommandBase {
 
   private final Drivetrain drivetrain;
+  private final LimeLightSubsystem limelight;
+  private final TurretSubsystem turret;
+  
   private XboxController xbox;
 
   private double forward = 0;
@@ -50,9 +55,11 @@ public class AutoDriveByMeters extends CommandBase {
   private double acceleratorSpeedModS = 0;
   private double acceleratorSpeedModR = 0;
  
-  public AutoDriveByMeters(Drivetrain dt, double forwardSpeed, double strafeSpeed, double rotationSpeed, double distanceX, double distanceY, double angleZ) {
+  public AutoDriveByMeters(Drivetrain dt, LimeLightSubsystem ls, TurretSubsystem ts, double forwardSpeed, double strafeSpeed, double rotationSpeed, double distanceX, double distanceY, double angleZ) {
     
     drivetrain = dt;
+    limelight = ls;
+    turret = ts;
 
     //targetForward = forwardSpeed;
     //targetStrafe = strafeSpeed;
@@ -66,7 +73,7 @@ public class AutoDriveByMeters extends CommandBase {
     targetDistanceY = distanceY;
     targetAngleZ = angleZ;
 
-    addRequirements(drivetrain);
+    addRequirements(drivetrain, limelight, turret);
 
   }
 
@@ -222,12 +229,27 @@ public class AutoDriveByMeters extends CommandBase {
       drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, -rearRightSpeed);
 
       isFinished = false;
+
+      //Turret Logic
+      if(limelight.HorizontalOffset() > .2){
+        turret.turnTurret(limelight.HorizontalOffset() / 60);
+      }
+      else if(limelight.HorizontalOffset() < -.2){
+        turret.turnTurret(limelight.HorizontalOffset() / 60);
+      }
+      else{
+        turret.turnTurret(0);
+      }
+
     }
 
   }  
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    turret.turnTurret(0);
+  }
 
   @Override
   public boolean isFinished() {
