@@ -19,7 +19,7 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 import java.lang.Math;
 
 /*
-  NOTE: This class is currently not functional
+  NOTE: This class is currently NON-FUNCTIONAL
 */
 
 public class DriveWithXboxOptimized extends CommandBase {
