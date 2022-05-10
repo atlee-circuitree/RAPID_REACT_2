@@ -69,55 +69,13 @@ public class DriveWithXbox extends CommandBase {
     5. Feed that to a driveMotors() function 
     6. Add in a rotateEntireRobot() function using the other joystick and hope it doesnt break anything 
     7. Debug the heck out of this command **Currently on this step - Simon**
+    
+    (I stopped following these steps after the scrimmage, but I keep the comment around. It's a piece of history)
     */
+    
 
-    //Define robot target vector variables (X,Y,Z respectively)  
-    //double forward = -slewRateLimiterX.calculate(RobotContainer.xbox.getLeftY());
-    //double strafe = -slewRateLimiterY.calculate(RobotContainer.xbox.getLeftX());
-    //double rotation = -slewRateLimiterZ.calculate(RobotContainer.xbox.getRightX());
-
-    /*
-
-    if (isTesting = true && xbox.getAButton() == true) {
-
-      forward = -1;
-      strafe = 0;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getBButton() == true) {
-     
-      forward = 0;
-      strafe = 1;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getXButton() == true) {
-
-      forward = 0;
-      strafe = -1;
-      rotation = 0;
-
-    } else if (isTesting = true && xbox.getYButton() == true) {
-
-      forward = 1;
-      strafe = 0;
-      rotation = 0;
-
-    } else if (isTesting = true) {
-
-      forward =0;
-      strafe = 0;
-      rotation = 0;
-  
-    } else {
-
-      forward = -xbox.getLeftY();
-      strafe = -xbox.getLeftX();
-      rotation = -xbox.getRightX();
-
-    }
-
-    */
-
+    //Define robot target vector variables (X,Y,Z respectively)
+    //A Button = TURBO MODE
     if(xbox.getAButton()){
       forward = xbox.getLeftY();
       strafe = xbox.getLeftX();
@@ -129,10 +87,6 @@ public class DriveWithXbox extends CommandBase {
       rotation = xbox.getRightX() * 0.7;
     }
 
-
-    //if(rotation != 0 && (forward != 0 || strafe != 0)){
-    //  rotation = slewRateLimiterZ.calculate(xbox.getRightX()) * 0.6;
-    //}
 
     //Controller Deadband
     if(Math.abs(forward) < 0.05){
@@ -146,28 +100,19 @@ public class DriveWithXbox extends CommandBase {
     }
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
-    if(xbox.getYButtonPressed()){
-      fieldOrientation = !fieldOrientation;
-    }
-    if(fieldOrientation){
-      double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
-      strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
-      forward = temp;
-    }
-    else{
-      forward = -forward;
-      strafe = -strafe;
-      rotation = -rotation;
-    }
+    double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
+    strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
+    forward = temp;
+
+    
     //Do some math to calculate the angles/sppeds needed to meet the target vectors
-    //I don't have enough space to say what A,B,C and D actually represent, but the swerve documentation does it well 
+    //I don't have enough space or brainpower to say what A,B,C and D actually represent, but the swerve documentation does it well 
     double A = strafe - (rotation * (Constants.wheelbase/Constants.drivetrainRadius));
     double B = strafe + (rotation * (Constants.wheelbase/Constants.drivetrainRadius));
     double C = forward - (rotation * (Constants.trackwidth/Constants.drivetrainRadius));
     double D = forward + (rotation * (Constants.trackwidth/Constants.drivetrainRadius));
 
     //Calculates module speeds
-
     double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2));
     double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2));
     double rearLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2));
@@ -205,11 +150,6 @@ public class DriveWithXbox extends CommandBase {
     }
     else{
       //Set angles for modules (change speed mod later if needed)
-      //Original angle values
-      //FL: B, D
-      //FR: B, C
-      //RL: A, D
-      //RR: A, C
       drivetrain.rotateModule(SwerveModule.FRONT_LEFT, Math.atan2(B, C)*(180/Math.PI), 1);
       drivetrain.rotateModule(SwerveModule.FRONT_RIGHT, Math.atan2(B, D)*(180/Math.PI), 1);
       drivetrain.rotateModule(SwerveModule.REAR_LEFT, Math.atan2(A, C)*(180/Math.PI), 1);
@@ -230,7 +170,7 @@ public class DriveWithXbox extends CommandBase {
     driveWithXboxDashboard = driveWithXboxDashboard + "NavX Yaw/" + String.valueOf(drivetrain.getNavXOutput()) + ";";
 
 
-    //DEBUG
+    //Reset gyro button
     if(xbox.getBackButtonPressed()){
       drivetrain.zeroNavXYaw();
       drivetrain.resetOdometry(new Pose2d(new Translation2d(0, new Rotation2d(0)), new Rotation2d(0)));

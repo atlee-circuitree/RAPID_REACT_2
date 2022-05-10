@@ -194,11 +194,8 @@ public class Drivetrain extends SubsystemBase {
   //------------------------------------------------------------------------------------------------------------------------------------
 
 
-  //The only difference between rotateAllModulesNonLinear() and rotateAllModulesLinear() is that the non linear is meant to be
-  //called in a bigger loop, and the linear one makes its own loop
-
-
-  public void driveAllModulesNonLinear(double speed){
+  //Powers all drive motors on the module
+  public void driveAllModules(double speed){
     
     frontLeftDrvMotor.set(TalonFXControlMode.PercentOutput, speed);
     frontRightDrvMotor.set(TalonFXControlMode.PercentOutput, speed);
@@ -207,7 +204,8 @@ public class Drivetrain extends SubsystemBase {
   
   }
 
-  public void killAllModulesNonLinear(){
+  //Stops all drive and rotational motors
+  public void killAllModules(){
     
     frontLeftDrvMotor.set(TalonFXControlMode.PercentOutput, 0);
     frontRightDrvMotor.set(TalonFXControlMode.PercentOutput, 0);
@@ -222,7 +220,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
 
-  //Add other motors as needed, just make sure to put them in the enum too
+  //Universal function for providing power to any one drivetrain motor
   public void rotateMotor(Motors motor, double speed){
     if(motor == Motors.FRONT_LEFT_ROT){
       frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, speed);
@@ -250,7 +248,7 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-
+  //Provides power to the rotational module motors using a PID
   public void rotateModule(SwerveModule module, double targetDegrees, double speedMod){
     
     setRotPIDSetpoint(module, targetDegrees);
@@ -292,47 +290,13 @@ public class Drivetrain extends SubsystemBase {
 
 
 
-
-
-
-  public void rotateModuleLinear(SwerveModule module, double targetDegrees, double speed){
-
-    if(module == SwerveModule.FRONT_LEFT){
-      frontLeftPID.setSetpoint(targetDegrees);
-      while(!frontLeftPID.atSetpoint()){
-        frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_LEFT), -speed, speed));
-      }
-      frontLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else if(module == SwerveModule.FRONT_RIGHT){
-      frontRightPID.setSetpoint(targetDegrees);
-      while(!frontRightPID.atSetpoint()){
-        frontRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.FRONT_RIGHT), -speed, speed));
-      }
-      frontRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else if(module == SwerveModule.REAR_LEFT){
-      rearLeftPID.setSetpoint(targetDegrees);
-      while(!rearLeftPID.atSetpoint()){
-        rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_LEFT), -speed, speed));
-      }
-      rearLeftRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-    else if(module == SwerveModule.REAR_RIGHT){
-      rearRightPID.setSetpoint(targetDegrees);
-      while(!rearRightPID.atSetpoint()){
-        rearRightRotMotor.set(TalonFXControlMode.PercentOutput, MathUtil.clamp(getRotPIDOutput(SwerveModule.REAR_RIGHT), -speed, speed));
-      }
-      rearRightRotMotor.set(TalonFXControlMode.PercentOutput, 0);
-    }
-
-  }
-
+  
 
   //------------------------------------------------------------------------------------------------------------------------------------
   //SENSORS
   //------------------------------------------------------------------------------------------------------------------------------------
 
+  //Returns the rotational encoder value (-180,180) of a module, modified by an offset value
   public double getRotEncoderValue(SwerveModule module){
 
     double encoderValue = 0;
@@ -370,6 +334,7 @@ public class Drivetrain extends SubsystemBase {
     return encoderValue;
   }
 
+  //Returns the rotational encoder value without any modification
   public double getAbsoluteRotEncoderValue(SwerveModule module){
   
     //Assigns offset encoder absolute position based on input SwerveModule parameter
@@ -390,6 +355,7 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  //Returns the inbuilt encoders on the drive falcons
   public double getDriveEncoder(SwerveModule module){
     
     if(module == SwerveModule.FRONT_LEFT){
@@ -409,6 +375,7 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  //Resets the drive falcon encoders
   public void resetDriveEncoders(){
     frontLeftDrvMotor.setSelectedSensorPosition(0);
     frontRightDrvMotor.setSelectedSensorPosition(0);
@@ -416,7 +383,8 @@ public class Drivetrain extends SubsystemBase {
     rearRightDrvMotor.setSelectedSensorPosition(0);
   }
  
-
+  //Returns the PID value based on the rotational encoder value
+  //The PID output is clamped between -180 and 180, and cannot return a value that is too small to power the motor (using a deadband)
   public double getRotPIDOutput(SwerveModule module){
     if(module == SwerveModule.FRONT_LEFT){
       double measurement = MathUtil.clamp(frontLeftPID.calculate(getRotEncoderValue(SwerveModule.FRONT_LEFT)), -180, 180);
@@ -475,6 +443,7 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  //Sets the PID setpoint
   public void setRotPIDSetpoint(SwerveModule module, double setpoint){
     if(module == SwerveModule.FRONT_LEFT){
       frontLeftPID.setSetpoint(setpoint);
@@ -492,6 +461,7 @@ public class Drivetrain extends SubsystemBase {
     }
   }
   
+
   public double getNavXOutput(){
     return navx.getYaw();
   }
@@ -507,7 +477,7 @@ public class Drivetrain extends SubsystemBase {
   //OTHER FUNCTIONS
   //------------------------------------------------------------------------------------------------------------------------------------
 
-
+  //Converts the dumb falcon velocity unit to meters per second
   public double positionChangePer100msToMetersPerSecond(double posChangePer100ms){
     
     //posChangePer100ms/10 = posChangePerSecond
@@ -522,7 +492,7 @@ public class Drivetrain extends SubsystemBase {
     return metersPerSecond;
   }
 
-
+  //Clamps values without having to do absolute value
   public double mapValues(double value, double highest, double lowest){
     if(value >= 0){
       return MathUtil.clamp(value, lowest, highest);
@@ -532,9 +502,6 @@ public class Drivetrain extends SubsystemBase {
   }
 }
 
-public double customPID(double target){
-  return Math.pow((target - getNavXOutput())/180, 2);
-}
 
 
 

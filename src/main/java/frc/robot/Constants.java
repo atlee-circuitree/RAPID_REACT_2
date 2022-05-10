@@ -36,10 +36,6 @@ public final class Constants {
     public static final int rearLeftRotEncoderPort = 12;
     public static final int rearRightRotEncoderPort = 10;
     
-    //public static final double frontLeftEncoderOffset = 249.61;
-    //public static final double frontRightEncoderOffset = 222.45;
-    //public static final double rearLeftEncoderOffset = 94.31;
-    //public static final double rearRightEncoderOffset = 121.38;
 
     public static final double frontLeftEncoderOffset = 285.380859375;
     public static final double frontRightEncoderOffset = 252.685546875;
@@ -50,15 +46,6 @@ public final class Constants {
     
     public static final int topShooterMotorPort = 13;
     public static final int bottomShooterMotorPort = 14;
-
-    public static final int lowVelocityTop = 5000;
-    public static final int lowVelocityBottom = 5000;
-
-    public static final int mediumVelocityTop = 8700;
-    public static final int mediumVelocityBottom = 9000;
-
-    public static final int highVelocityTop = 11200;
-    public static final int highVelocityBottom = 7800;
 
     public static final int turretMotorPort = 19;
 
@@ -78,13 +65,6 @@ public final class Constants {
     public static final double rotPID_D = 0.00;
     public static final double rotPIDMinValue = 0.07;
 
-    //Auto PIDs
-    public static final double kPXAutoController = 0.067365;
-    public static final double kPYAutoController = 0.067365;
-    //public static final double kPXAutoController = 0.15;
-    //public static final double kPYAutoController = 0.15;
-    public static final double kPAutoThetaController = .5;
-    //Was 1
 
     //Pneumatics
     
