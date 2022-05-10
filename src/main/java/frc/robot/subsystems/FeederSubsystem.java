@@ -21,8 +21,7 @@ public class FeederSubsystem extends SubsystemBase {
   public FeederSubsystem() {
 
     feederMotor = new CANSparkMax(Constants.feederMotorPort, MotorType.kBrushless);
-
-     
+    
   }
 
   public void runFeeder(double speed) {

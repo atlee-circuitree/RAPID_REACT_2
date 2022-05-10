@@ -28,6 +28,7 @@ public class DriveWithXbox extends CommandBase {
   private XboxController xbox;
 
   public boolean isTesting;
+  private boolean fieldOrientation = true;
 
   private double forward;
   private double strafe;
@@ -117,9 +118,17 @@ public class DriveWithXbox extends CommandBase {
 
     */
 
-    forward = xbox.getLeftY() * 0.4;
-    strafe = xbox.getLeftX() * 0.4;
-    rotation = xbox.getRightX() * 0.4;
+    if(xbox.getAButton()){
+      forward = xbox.getLeftY();
+      strafe = xbox.getLeftX();
+      rotation = xbox.getRightX();
+    }
+    else{
+      forward = xbox.getLeftY() * 0.7;
+      strafe = xbox.getLeftX() * 0.7;
+      rotation = xbox.getRightX() * 0.7;
+    }
+
 
     //if(rotation != 0 && (forward != 0 || strafe != 0)){
     //  rotation = slewRateLimiterZ.calculate(xbox.getRightX()) * 0.6;
@@ -137,10 +146,19 @@ public class DriveWithXbox extends CommandBase {
     }
 
     //Modify target values for field orientation (temp used to save calculations before original forward and strafe values are modified)
-    double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
-    strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
-    forward = temp;
-
+    if(xbox.getYButtonPressed()){
+      fieldOrientation = !fieldOrientation;
+    }
+    if(fieldOrientation){
+      double temp = forward * Math.cos(-drivetrain.getNavXOutputRadians()) + strafe * Math.sin(-drivetrain.getNavXOutputRadians()); 
+      strafe = -forward * Math.sin(-drivetrain.getNavXOutputRadians()) + strafe * Math.cos(-drivetrain.getNavXOutputRadians()); 
+      forward = temp;
+    }
+    else{
+      forward = -forward;
+      strafe = -strafe;
+      rotation = -rotation;
+    }
     //Do some math to calculate the angles/sppeds needed to meet the target vectors
     //I don't have enough space to say what A,B,C and D actually represent, but the swerve documentation does it well 
     double A = strafe - (rotation * (Constants.wheelbase/Constants.drivetrainRadius));

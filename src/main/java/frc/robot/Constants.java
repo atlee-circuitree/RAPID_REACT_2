@@ -33,8 +33,8 @@ public final class Constants {
 
     public static final int frontLeftRotEncoderPort = 11;
     public static final int frontRightRotEncoderPort = 9;
-    public static final int rearLeftRotEncoderPort = 10;
-    public static final int rearRightRotEncoderPort = 12;
+    public static final int rearLeftRotEncoderPort = 12;
+    public static final int rearRightRotEncoderPort = 10;
     
     //public static final double frontLeftEncoderOffset = 249.61;
     //public static final double frontRightEncoderOffset = 222.45;
@@ -54,8 +54,8 @@ public final class Constants {
     public static final int lowVelocityTop = 5000;
     public static final int lowVelocityBottom = 5000;
 
-    public static final int mediumVelocityTop = 7700;
-    public static final int mediumVelocityBottom = 8000;
+    public static final int mediumVelocityTop = 8700;
+    public static final int mediumVelocityBottom = 9000;
 
     public static final int highVelocityTop = 11200;
     public static final int highVelocityBottom = 7800;

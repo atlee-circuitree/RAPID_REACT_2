@@ -38,11 +38,13 @@ import frc.robot.commands.ShooterInAuto;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.commands.TurretAndShoot;
 import frc.robot.commands.TurretRotateAuto;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurretSubsystem;
+//import frc.robot.subsystems.CameraSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
@@ -71,6 +73,7 @@ public class RobotContainer {
   private final FeederSubsystem feeder;
   private final LimeLightSubsystem limelight;
   private final TurretSubsystem turret;  
+  private final CameraSubsystem cameraSubsystem = new CameraSubsystem();
   
   //Regular Commands
   private final DriveWithXbox driveWithXbox;
@@ -88,7 +91,7 @@ public class RobotContainer {
   private final SequentialCommandGroup twoBallHangarSide;
   private final SequentialCommandGroup twobBallMiddleandCollectTwo;
 
-  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  //private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public Command feederCommand(double speed) {
     Command feedCommand = new RunFeeder(speed, feeder, pneumatics);
@@ -147,7 +150,8 @@ public class RobotContainer {
     smartDashboardCommand = new SmartDashboardCommand();
 
     turretAndShoot = new TurretAndShoot(turret, pneumatics, limelight, xbox2);
- 
+
+    
     configureButtonBindings();
 
     limelight.EnableLED();
@@ -259,12 +263,12 @@ public class RobotContainer {
 
     */
 
-    autoChooser.addOption("2 Ball Wall Side", twoBallWallSide);
-    autoChooser.addOption("2 Ball Middle", twoBallMiddle);
-    autoChooser.addOption("2 Ball Hangar Side", twoBallHangarSide);
-    autoChooser.addOption("4 Ball Middle", twobBallMiddleandCollectTwo);
+    //autoChooser.addOption("2 Ball Wall Side", twoBallWallSide);
+    //autoChooser.addOption("2 Ball Middle", twoBallMiddle);
+    //autoChooser.addOption("2 Ball Hangar Side", twoBallHangarSide);
+    //autoChooser.addOption("4 Ball Middle", twobBallMiddleandCollectTwo);
 
-    SmartDashboard.putData("Select Auto", autoChooser);
+    //SmartDashboard.putData("Select Auto", autoChooser);
   }
 
   /**
@@ -437,7 +441,15 @@ public class RobotContainer {
     //Auto Drive command parameters in order: (forwardSpeed, strafeSpeed, rotationSpeed (keep very low), target forward distance, target strafe distance, target angle)
     //To go backwards, invert speed, NOT DISTANCE
     
-    return autoChooser.getSelected();
+    if(Double.valueOf(Robot.autoChooser.getSelected().toString()) == 1){
+      return twoBallWallSide;
+    }
+    else if(Double.valueOf(Robot.autoChooser.getSelected().toString()) == 2){
+      return twoBallMiddle;
+    }
+    else{
+      return null;
+    }
     
   }
 }

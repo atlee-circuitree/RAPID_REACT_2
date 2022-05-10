@@ -43,7 +43,7 @@ public class TurretAndShoot extends CommandBase {
 
   private double distance;
 
-  private double timeout = .7;
+  private double timeout = .3;
 
   Timer pneumaticTime = new Timer();
   Timer timeoutTime = new Timer();
@@ -69,23 +69,27 @@ public class TurretAndShoot extends CommandBase {
   public void execute() {
     
     //Constantly update values for the adaptive shot
-    distance = limelight.getDistanceToTarget();
+    if(!xboxController.getLeftBumper()){
+      distance = limelight.getDistanceToTarget();
  
-    int roundedDistance = (int) Math.round(distance * 10);
+      int roundedDistance = (int) Math.round(distance * 10);
 
-    if(roundedDistance >= 60) {
+      if(roundedDistance >= 60) {
 
-      roundedDistance = 60;
+        roundedDistance = 60;
 
-    }
+      }
     
-    LaunchVelocity[] launchVelocityArray = turret.getDistanceToVelocityArray();
+      LaunchVelocity[] launchVelocityArray = turret.getDistanceToVelocityArray();
 
-    adaptiveTopVelocity = launchVelocityArray[roundedDistance].topMotorVelocity;
+      adaptiveTopVelocity = launchVelocityArray[roundedDistance].topMotorVelocity;
 
-    adaptiveBottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
-
-    SmartDashboard.putNumber("Limelight Rounded Distance", roundedDistance);
+      adaptiveBottomVelocity = launchVelocityArray[roundedDistance].bottomMotorVelocity;
+    }
+    else{
+      //do nothing
+    }
+    //SmartDashboard.putNumber("Limelight Rounded Distance", roundedDistance);
     SmartDashboard.putNumber("Adaptive Top Velocity", adaptiveTopVelocity);
     SmartDashboard.putNumber("Adaptive Bottom Velocity", adaptiveBottomVelocity);
 
@@ -119,12 +123,16 @@ public class TurretAndShoot extends CommandBase {
     targetTopVelocity = Constants.lowVelocityTop;
     targetBottomVelocity = Constants.lowVelocityBottom;
  
-    } else if (xboxController.getBackButton() == true && InShot == false) {
+    } else if (xboxController.getLeftBumper() == true && InShot == false) {
 
-    turret.runTurretWithVelocity(turret.getShuffleTopMotor(), turret.getShuffleBottomMotor());
+    //turret.runTurretWithVelocity(turret.getShuffleTopMotor(), turret.getShuffleBottomMotor());
 
-    targetTopVelocity = turret.getShuffleTopMotor();
-    targetBottomVelocity = turret.getShuffleBottomMotor();
+    //targetTopVelocity = turret.getShuffleTopMotor();
+    //targetBottomVelocity = turret.getShuffleBottomMotor();
+    turret.runTurretWithVelocity(adaptiveTopVelocity, adaptiveBottomVelocity);
+
+    targetTopVelocity = adaptiveTopVelocity;
+    targetBottomVelocity = adaptiveBottomVelocity;
 
     } else if (InShot == false) {
 
