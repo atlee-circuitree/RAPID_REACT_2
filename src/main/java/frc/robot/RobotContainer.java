@@ -11,6 +11,7 @@ import frc.robot.commands.DriveWithXbox;
 import frc.robot.commands.RecalibrateModules;
 import frc.robot.commands.SmartDashboardCommand;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Pathweaver;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 
@@ -29,6 +30,7 @@ public class RobotContainer {
   
   //Subsystems
   private final Drivetrain drivetrain;
+  private final Pathweaver pathweaver;
   
   //Regular Commands
   private final DriveWithXbox driveWithXbox;
@@ -45,6 +47,7 @@ public class RobotContainer {
  
     //subsystems
     drivetrain = new Drivetrain();
+    pathweaver = new Pathweaver();
 
     //Teleop commands
     driveWithXbox = new DriveWithXbox(drivetrain, xbox, false);

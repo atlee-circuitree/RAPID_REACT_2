@@ -76,15 +76,15 @@ public class DriveWithXbox extends CommandBase {
 
     //Define robot target vector variables (X,Y,Z respectively)
     //A Button = TURBO MODE
-    if(xbox.getAButton()){
+    if(xbox.getXButton()){
       forward = xbox.getLeftY();
       strafe = xbox.getLeftX();
       rotation = xbox.getRightX();
     }
     else{
-      forward = xbox.getLeftY() * 0.7;
-      strafe = xbox.getLeftX() * 0.7;
-      rotation = xbox.getRightX() * 0.7;
+      forward = xbox.getLeftY() * 0.3;
+      strafe = xbox.getLeftX() * 0.3;
+      rotation = xbox.getRightX() * 0.3;
     }
 
 
