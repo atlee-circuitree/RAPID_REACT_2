@@ -113,8 +113,10 @@ public class TurretAndShoot extends CommandBase {
 
     turret.runTurretWithVelocity(Constants.highVelocityTop, Constants.highVelocityBottom);
 
-    targetTopVelocity = Constants.highVelocityTop;
-    targetBottomVelocity = Constants.highVelocityBottom;
+    //targetTopVelocity = Constants.highVelocityTop;
+    //targetBottomVelocity = Constants.highVelocityBottom;
+    targetTopVelocity = Constants.mediumVelocityTop;
+    targetBottomVelocity = Constants.mediumVelocityBottom;
 
     } else if (xboxController.getXButton() == true && InShot == false) {
 

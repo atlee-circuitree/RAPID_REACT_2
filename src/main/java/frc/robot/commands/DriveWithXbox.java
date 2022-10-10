@@ -216,10 +216,10 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 1);
 
       //Set speeds for modules
-      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed);
-      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, frontRightSpeed);
-      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, rearLeftSpeed);
-      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, rearRightSpeed);
+      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed*0.5);
+      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, frontRightSpeed*0.5);
+      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, rearLeftSpeed*0.5);
+      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, rearRightSpeed*0.5);
     }
 
     //Show important values on dashboard
