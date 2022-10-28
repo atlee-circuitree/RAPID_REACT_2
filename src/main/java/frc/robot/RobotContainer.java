@@ -162,6 +162,8 @@ public class RobotContainer {
 
     DWX_SDC_TUR = new PerpetualCommand(driveWithXbox.alongWith(smartDashboardCommand).alongWith(turretAndShoot));
     
+    ///////////////////////UNCOMMENT THE LINE WITH RECALIBRATEMODULES TO SWITCH TO RECALIBRATE MODE////////////////////////////////////////
+
     //drivetrain.setDefaultCommand(recalibrateModules);
     drivetrain.setDefaultCommand(DWX_SDC_TUR);
 

@@ -119,14 +119,19 @@ public class DriveWithXbox extends CommandBase {
     */
 
     if(xbox.getAButton()){
+      forward = xbox.getLeftY()*0.8;
+      strafe = xbox.getLeftX()*0.8;
+      rotation = xbox.getRightX()*0.8;
+    }
+    else if(xbox.getXButton()){
       forward = xbox.getLeftY();
       strafe = xbox.getLeftX();
       rotation = xbox.getRightX();
     }
     else{
-      forward = xbox.getLeftY() * 0.7;
-      strafe = xbox.getLeftX() * 0.7;
-      rotation = xbox.getRightX() * 0.7;
+      forward = xbox.getLeftY() * 0.65;
+      strafe = xbox.getLeftX() * 0.65;
+      rotation = xbox.getRightX() * 0.5;
     }
 
 
@@ -216,10 +221,10 @@ public class DriveWithXbox extends CommandBase {
       drivetrain.rotateModule(SwerveModule.REAR_RIGHT, Math.atan2(A, D)*(180/Math.PI), 1);
 
       //Set speeds for modules
-      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed*0.5);
-      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, frontRightSpeed*0.5);
-      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, rearLeftSpeed*0.5);
-      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, rearRightSpeed*0.5);
+      drivetrain.rotateMotor(Motors.FRONT_LEFT_DRV, frontLeftSpeed);
+      drivetrain.rotateMotor(Motors.FRONT_RIGHT_DRV, frontRightSpeed);
+      drivetrain.rotateMotor(Motors.REAR_LEFT_DRV, rearLeftSpeed);
+      drivetrain.rotateMotor(Motors.REAR_RIGHT_DRV, rearRightSpeed);
     }
 
     //Show important values on dashboard

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -16,6 +17,8 @@ public class TurretRotateAuto extends CommandBase {
   private final LimeLightSubsystem limelight;
   private Timer timeoutTimer = new Timer();
   private double targetTimeout;
+
+  private double limelightOffset = 0;
    
   public TurretRotateAuto(TurretSubsystem ts, LimeLightSubsystem ls, double timeout) {
 
@@ -39,18 +42,20 @@ public class TurretRotateAuto extends CommandBase {
   public void execute() {
 
     //Check Red/Blue and Green/Blue SparkMax led code
-    if(limelight.HorizontalOffset() > .2){
+    if(limelight.HorizontalOffset() > .2 + limelightOffset){
       turret.turnTurret(limelight.HorizontalOffset() / 60);
     }
-    else if(limelight.HorizontalOffset() < -.2){
+    else if(limelight.HorizontalOffset() < -.2 + limelightOffset){
       turret.turnTurret(limelight.HorizontalOffset() / 60);
     }
     else{
       turret.turnTurret(0);
     }
 
-  }
+    SmartDashboard.putString("TurretTesting", "Triggered");
 
+  }
+  
   
   @Override
   public void end(boolean interrupted) {
