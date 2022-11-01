@@ -127,14 +127,10 @@ public class TurretAndShoot extends CommandBase {
  
     } else if (xboxController.getLeftBumper() == true && InShot == false) {
 
-    //turret.runTurretWithVelocity(turret.getShuffleTopMotor(), turret.getShuffleBottomMotor());
+    turret.runTurretWithVelocity(turret.getShuffleTopMotor(), turret.getShuffleBottomMotor());
 
-    //targetTopVelocity = turret.getShuffleTopMotor();
-    //targetBottomVelocity = turret.getShuffleBottomMotor();
-    turret.runTurretWithVelocity(adaptiveTopVelocity, adaptiveBottomVelocity);
-
-    targetTopVelocity = adaptiveTopVelocity;
-    targetBottomVelocity = adaptiveBottomVelocity;
+    targetTopVelocity = turret.getShuffleTopMotor();
+    targetBottomVelocity = turret.getShuffleBottomMotor();
 
     } else if (InShot == false) {
 
