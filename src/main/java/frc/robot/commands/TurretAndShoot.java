@@ -142,8 +142,7 @@ public class TurretAndShoot extends CommandBase {
     }
 
     //Start the shot timer and freeze velocity adjustments 
-    if (xboxController.getRightBumper() == true && InShot == false) {
-
+    if ((xboxController.getRightBumper() == true || xboxController.getAButton() == true || xboxController.getBButton() == true || xboxController.getXButton() == true) && InShot == false) {
     InShot = true;
     pneumaticTime.start();
     timeoutTime.start();
